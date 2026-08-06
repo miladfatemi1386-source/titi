@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>پیش غذا | پیتزا گیتی</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#120e0a;
+    --ember:#f2b705;
+    --flame:#d94f04;
+    --smoke:#efe6d8;
+    --smoke-dim:#b8ab97;
+    --line:#3a2f24;
+    --ticket:#1a140f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--char);
+    color:var(--smoke);
+    font-family:'Vazirmatn',sans-serif;
+    min-height:100vh;
+    padding:20px 16px 80px;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:1;
+    mix-blend-mode:overlay;
+  }
+
+  .top-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .back-btn{
+    background:var(--ticket);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    color:var(--smoke-dim);
+    font-size:18px;
+    cursor:pointer;
+    text-decoration:none;
+    line-height:1;
+  }
+  .page-title{
+    font-family:'Baloo 2', sans-serif;
+    font-size:28px;
+    color:var(--ember);
+  }
+  .page-title .fa{color:var(--flame);}
+
+  .search-wrap{
+    position:relative;
+    margin-bottom:18px;
+  }
+  .search-input{
+    width:100%;
+    background:var(--ticket);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 42px 12px 16px;
+    color:var(--smoke);
+    font-family:'Vazirmatn',sans-serif;
+    font-size:14px;
+    outline:none;
+  }
+  .search-input:focus{border-color:var(--flame);}
+  .search-icon{
+    position:absolute;
+    right:14px; top:50%;
+    transform:translateY(-50%);
+    color:var(--smoke-dim);
+    font-size:14px;
+  }
+  .search-clear{
+    position:absolute;
+    left:14px; top:50%;
+    transform:translateY(-50%);
+    background:none; border:none;
+    color:var(--smoke-dim);
+    font-size:14px;
+    cursor:pointer;
+    display:none;
+  }
+  .search-clear.show{display:block;}
+
+  .ticket-list{display:flex; flex-direction:column; gap:10px;}
+  .ticket{
+    background:var(--ticket);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:14px 16px;
+    position:relative;
+  }
+  .ticket::before{
+    content:"";
+    position:absolute;
+    top:0; bottom:0; right:0;
+    width:3px;
+    background:var(--line);
+  }
+  .ticket.hot::before{background:var(--flame);}
+  .ticket.hot{
+    background:linear-gradient(120deg, rgba(217,79,4,0.07), var(--ticket) 45%);
+    border-color:rgba(217,79,4,0.35);
+  }
+  .ticket-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .ticket-name{
+    font-weight:700;
+    font-size:15.5px;
+    color:var(--smoke);
+    line-height:1.4;
+  }
+  .flag{
+    display:inline-flex;
+    align-items:center;
+    font-size:10px;
+    font-weight:800;
+    color:var(--char);
+    background:var(--flame);
+    padding:2px 7px;
+    border-radius:4px;
+    margin-inline-start:7px;
+    vertical-align:2px;
+  }
+  .ticket-desc{
+    font-size:12.5px;
+    color:var(--smoke-dim);
+    margin-top:5px;
+    line-height:1.85;
+  }
+  .ticket-prices{
+    margin-top:11px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .price-tag{
+    background:rgba(242,183,5,0.06);
+    border:1px dashed rgba(242,183,5,0.3);
+    border-radius:6px;
+    padding:5px 10px;
+    font-size:11.5px;
+    color:var(--smoke-dim);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  .price-tag b{
+    color:var(--ember);
+    font-weight:800;
+    font-size:13px;
+  }
+  
+  /* قیمت واحد - به رنگ زرد */
+  .price-solo{
+    margin-top:11px;
+    font-weight:800;
+    font-size:18px;
+    color:var(--ember);
+    font-family:'Vazirmatn',sans-serif;
+  }
+  .price-solo small{
+    color:var(--smoke-dim);
+    font-weight:500;
+    font-size:11.5px;
+    margin-inline-start:4px;
+  }
+
+  .no-results{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--smoke-dim);
+    font-size:13px;
+  }
+
+  .skeleton-card{
+    background:var(--ticket);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:14px 16px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .skeleton-card .line{
+    height:18px;
+    background:var(--line);
+    border-radius:4px;
+    margin-bottom:8px;
+  }
+  .skeleton-card .line.medium{width:80%;}
+  .skeleton-card .line.full{width:100%;}
+  .skeleton-card .price-row{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+    flex-wrap:wrap;
+  }
+  .skeleton-card .price-row span{
+    height:28px;
+    width:80px;
+    background:var(--line);
+    border-radius:6px;
+  }
+  @keyframes pulse{
+    0%{opacity:0.5;}
+    50%{opacity:0.9;}
+    100%{opacity:0.5;}
+  }
+
+  .footer{
+    margin-top:30px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid var(--line);
+  }
+  .footer a{
+    color:#5c5148;
+    text-decoration:none;
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="index.html" class="back-btn">←</a>
+  <span class="page-title">🍟 پیش غذا</span>
+</div>
+
+<div class="search-wrap">
+  <input type="text" class="search-input" id="searchInput" placeholder="جستجوی پیش غذا...">
+  <span class="search-icon">🔍</span>
+  <button class="search-clear" id="searchClear">✕</button>
+</div>
+
+<div id="menuContainer">
+  <div class="ticket-list" id="skeletonLoader">
+    <div class="skeleton-card"><div class="line medium"></div><div class="line full"></div><div class="price-row"><span></span><span></span><span></span></div></div>
+    <div class="skeleton-card"><div class="line medium"></div><div class="line full"></div><div class="price-row"><span></span><span></span></div></div>
+    <div class="skeleton-card"><div class="line medium"></div><div class="line full"></div><div class="price-row"><span></span><span></span><span></span><span></span></div></div>
+    <div class="skeleton-card"><div class="line medium"></div><div class="line full"></div><div class="price-row"><span></span><span></span></div></div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="gheiti-menu-login.html">ورود مدیریت</a>
+</div>
+
+<script>
+const SUPABASE_URL = "https://rwfliawxhoyozdcgpipb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_6WEiBx96Ye0AAEmjkI6azw_rMJI46ac";
+const SUPABASE_TABLE = "menu_data";
+const SUPABASE_ROW_ID = 1;
+
+const CATEGORY_ID = "prefood";
+
+function normalizePrices(prices){
+  if(!prices) return [];
+  if(Array.isArray(prices)) return prices;
+  return Object.entries(prices).map(([label, price]) => ({ label, price }));
+}
+
+function toman(n){ return Number(n).toLocaleString('fa-IR'); }
+
+let currentItems = [];
+let currentSearch = "";
+
+function renderItems(items){
+  const container = document.getElementById('menuContainer');
+  const skeleton = document.getElementById('skeletonLoader');
+  if(skeleton) skeleton.style.display = 'none';
+
+  const query = currentSearch.trim().toLowerCase();
+  let filtered = items;
+  if(query){
+    filtered = items.filter(item => 
+      item.name.toLowerCase().includes(query) || 
+      (item.desc && item.desc.toLowerCase().includes(query))
+    );
+  }
+
+  if(filtered.length === 0){
+    container.innerHTML = `<div class="no-results">هیچ پیش غذایی با این جستجو پیدا نشد</div>`;
+    return;
+  }
+
+  let html = '<div class="ticket-list">';
+  filtered.forEach(item => {
+    const isHot = item.tag ? 'hot' : '';
+    let priceHtml = '';
+    if(item.prices && Array.isArray(item.prices)){
+      priceHtml = '<div class="ticket-prices">' + item.prices.map(({label, price}) =>
+        `<span class="price-tag">${label} <b>${toman(price)}</b></span>`
+      ).join('') + '</div>';
+    } else if(item.single !== undefined){
+      priceHtml = `<div class="price-solo">${toman(item.single)}<small>تومان</small></div>`;
+    }
+    html += `
+      <div class="ticket ${isHot}">
+        <div class="ticket-row">
+          <div class="ticket-name">${item.name}${item.tag ? `<span class="flag">${item.tag}</span>` : ''}</div>
+        </div>
+        ${item.desc ? `<div class="ticket-desc">${item.desc}</div>` : ''}
+        ${priceHtml}
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+async function loadMenu(){
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${SUPABASE_ROW_ID}&select=data`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if(!res.ok) throw new Error('fail');
+    const rows = await res.json();
+    if(rows && rows[0] && rows[0].data && rows[0].data.categories){
+      const cat = rows[0].data.categories.find(c => c.id === CATEGORY_ID);
+      if(cat && cat.items){
+        cat.items.forEach(item => {
+          if(item.prices && !Array.isArray(item.prices)){
+            item.prices = normalizePrices(item.prices);
+          }
+        });
+        currentItems = cat.items;
+        renderItems(currentItems);
+      }
+    }
+  }catch(e){
+    // fallback
+  }
+}
+
+document.getElementById('searchInput').addEventListener('input', function(){
+  currentSearch = this.value;
+  document.getElementById('searchClear').classList.toggle('show', currentSearch.length > 0);
+  if(currentItems.length) renderItems(currentItems);
+});
+document.getElementById('searchClear').addEventListener('click', function(){
+  currentSearch = "";
+  document.getElementById('searchInput').value = "";
+  this.classList.remove('show');
+  if(currentItems.length) renderItems(currentItems);
+});
+
+loadMenu();
+</script>
+
+</body>
+</html>
