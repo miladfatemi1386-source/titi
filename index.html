@@ -505,8 +505,9 @@ function listAllMonthKeys() {
 
 // ---------- Telegram ----------
 function getTelegramSettings() {
-  return { token: 'AAHf_VLUyVd_V8k66pGqP3rMTm7FNmovjbU', chatId: '8734519555' };
-}
+  const raw = localStorage.getItem(SETTINGS_KEY);
+  return raw ? JSON.parse(raw) : { token: '', chatId: '' };
+    }
 
 function saveTelegramSettings(token, chatId) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify({ token, chatId }));
