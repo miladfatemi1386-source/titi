@@ -4,11 +4,89 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>حساب کتابی</title>
+
+<!-- ===================================================== -->
+<!-- فونت‌های زیبا -->
+<!-- ===================================================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- وزیرمتن -->
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- ایران‌سنس (از طریق CDN) -->
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+<!-- فونت پویا (اختیاری) -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <link rel="manifest" href="data:application/json,{}">
-<meta name="theme-color" content="#000">
+<meta name="theme-color" content="#000" id="themeColorMeta">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
+/* ===================================================== */
+/* روتینگ و متغیرهای تم */
+/* ===================================================== */
+:root {
+  /* تم تاریک (پیش‌فرض) */
+  --bg-primary: #000000;
+  --bg-secondary: #0d0d0d;
+  --bg-card: #111111;
+  --bg-input: #191919;
+  --bg-hover: #222222;
+  --bg-active: #2a2a2a;
+  --border-color: #333333;
+  --border-light: #222222;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #dddddd;
+  --text-muted: #888888;
+  --text-dim: #666666;
+  
+  --shadow-color: rgba(0,0,0,0.5);
+  
+  --accent-blue: #4a9eff;
+  --accent-green: #7fd17f;
+  --accent-orange: #ffa500;
+  --accent-gold: #ffd700;
+  --accent-purple: #9b59b6;
+  --accent-red: #663333;
+  
+  --toast-bg: #222222;
+  --modal-overlay: rgba(0,0,0,0.8);
+  
+  --font-main: 'Vazirmatn', 'IranSans', 'Tahoma', sans-serif;
+  --font-display: 'Baloo 2', 'Vazirmatn', cursive;
+  
+  --transition-speed: 0.3s;
+}
+
+/* ===================================================== */
+/* تم روشن */
+/* ===================================================== */
+[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-input: #f0f0f0;
+  --bg-hover: #e8e8e8;
+  --bg-active: #dddddd;
+  --border-color: #cccccc;
+  --border-light: #e0e0e0;
+  
+  --text-primary: #1a1a1a;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --text-dim: #999999;
+  
+  --shadow-color: rgba(0,0,0,0.1);
+  
+  --toast-bg: #333333;
+  --modal-overlay: rgba(0,0,0,0.5);
+}
+
+/* ===================================================== */
+/* استایل پایه */
+/* ===================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -16,11 +94,12 @@
 }
 
 body {
-  background: #000;
-  color: #fff;
-  font-family: Tahoma, 'Vazirmatn', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
   min-height: 100vh;
   -webkit-tap-highlight-color: transparent;
+  transition: background var(--transition-speed), color var(--transition-speed);
 }
 
 .app {
@@ -29,42 +108,73 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--bg-primary);
+  transition: background var(--transition-speed);
 }
 
-/* Top bar */
+/* ===================================================== */
+/* دکمه تغییر تم */
+/* ===================================================== */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 22px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all var(--transition-speed);
+}
+
+.theme-toggle:active {
+  background: var(--bg-hover);
+}
+
+/* ===================================================== */
+/* تاپ بار */
+/* ===================================================== */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 18px 16px;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  background: #000;
+  background: var(--bg-primary);
   z-index: 10;
+  transition: background var(--transition-speed), border-color var(--transition-speed);
 }
 
 .month-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 700;
   flex: 1;
   text-align: center;
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
 .icon-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 22px;
   padding: 6px 10px;
   cursor: pointer;
   border-radius: 8px;
+  transition: all var(--transition-speed);
 }
 
 .icon-btn:active {
-  background: #222;
+  background: var(--bg-hover);
 }
 
+/* ===================================================== */
+/* دکمه‌های عملیاتی */
+/* ===================================================== */
 .month-actions {
   display: flex;
   gap: 8px;
@@ -74,19 +184,23 @@ body {
 
 .ghost-btn {
   flex: 1;
-  background: #151515;
-  color: #ccc;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
   padding: 10px;
   border-radius: 10px;
   font-size: 13px;
   cursor: pointer;
   min-width: 80px;
   text-align: center;
+  font-family: var(--font-main);
+  font-weight: 500;
+  transition: all var(--transition-speed);
 }
 
 .ghost-btn:active {
-  background: #222;
+  background: var(--bg-hover);
+  transform: scale(0.97);
 }
 
 .submit-btn {
@@ -99,7 +213,9 @@ body {
   background: #2a5a4a;
 }
 
-/* Content */
+/* ===================================================== */
+/* لیست آیتم‌ها */
+/* ===================================================== */
 .content {
   padding: 8px 16px 40px;
   flex: 1;
@@ -114,31 +230,33 @@ body {
   align-items: center;
   gap: 8px;
   padding: 12px 0;
-  border-bottom: 1px solid #1a1a1a;
+  border-bottom: 1px solid var(--border-light);
   flex-wrap: wrap;
+  transition: border-color var(--transition-speed);
 }
 
 .item-row.checked .item-name,
 .item-row.checked .item-amount {
   text-decoration: line-through;
-  color: #666;
+  color: var(--text-dim);
 }
 
 .item-row.advance .item-name,
 .item-row.advance .item-amount {
-  color: #ffa500;
+  color: var(--accent-orange);
 }
 
 .item-row.important .item-name::before {
   content: "⭐ ";
-  color: #ffd700;
+  color: var(--accent-gold);
 }
 
 .item-checkbox {
   width: 22px;
   height: 22px;
   flex-shrink: 0;
-  accent-color: #4a9eff;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
 }
 
 .item-name {
@@ -146,13 +264,18 @@ body {
   font-size: 17px;
   min-width: 80px;
   word-break: break-word;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
 .item-amount {
   font-size: 17px;
-  color: #ddd;
+  color: var(--text-secondary);
   min-width: 60px;
   text-align: left;
+  font-weight: 600;
+  transition: color var(--transition-speed);
 }
 
 .item-actions {
@@ -162,22 +285,25 @@ body {
   flex-wrap: wrap;
 }
 
+/* دکمه‌های عملیاتی روی آیتم */
 .advance-btn {
   background: none;
-  border: 1px solid #555;
-  color: #ffa500;
+  border: 1px solid var(--border-color);
+  color: var(--accent-orange);
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s;
+  transition: all var(--transition-speed);
+  font-family: var(--font-main);
+  font-weight: 500;
 }
 
 .advance-btn.active {
-  background: #ffa500;
+  background: var(--accent-orange);
   color: #000;
-  border-color: #ffa500;
+  border-color: var(--accent-orange);
 }
 
 .advance-btn:active {
@@ -186,19 +312,20 @@ body {
 
 .important-btn {
   background: none;
-  border: 1px solid #555;
-  color: #ffd700;
+  border: 1px solid var(--border-color);
+  color: var(--accent-gold);
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
+  transition: all var(--transition-speed);
 }
 
 .important-btn.active {
-  background: #ffd700;
+  background: var(--accent-gold);
   color: #000;
-  border-color: #ffd700;
+  border-color: var(--accent-gold);
 }
 
 .important-btn:active {
@@ -207,47 +334,56 @@ body {
 
 .edit-btn {
   background: none;
-  border: 1px solid #555;
-  color: #4a9eff;
+  border: 1px solid var(--border-color);
+  color: var(--accent-blue);
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
+  transition: all var(--transition-speed);
 }
 
 .edit-btn:active {
-  background: #4a9eff;
+  background: var(--accent-blue);
   color: #000;
 }
 
 .repeat-btn {
   background: none;
-  border: 1px solid #555;
-  color: #9b59b6;
+  border: 1px solid var(--border-color);
+  color: var(--accent-purple);
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
+  transition: all var(--transition-speed);
 }
 
 .repeat-btn.active {
-  background: #9b59b6;
+  background: var(--accent-purple);
   color: #fff;
-  border-color: #9b59b6;
+  border-color: var(--accent-purple);
 }
 
 .delete-item-btn {
   background: none;
   border: none;
-  color: #663333;
+  color: var(--accent-red);
   font-size: 20px;
   cursor: pointer;
   padding: 4px 8px;
+  transition: all var(--transition-speed);
 }
 
-/* Add item */
+.delete-item-btn:active {
+  transform: scale(0.9);
+}
+
+/* ===================================================== */
+/* افزودن آیتم */
+/* ===================================================== */
 .add-item-row {
   display: flex;
   gap: 8px;
@@ -256,14 +392,25 @@ body {
 }
 
 .add-item-row input {
-  background: #111;
-  border: 1px solid #333;
-  color: #fff;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 10px;
   font-size: 15px;
   flex: 1;
   min-width: 80px;
+  font-family: var(--font-main);
+  transition: all var(--transition-speed);
+}
+
+.add-item-row input::placeholder {
+  color: var(--text-dim);
+}
+
+.add-item-row input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
 }
 
 #newItemName {
@@ -276,7 +423,7 @@ body {
 }
 
 .add-btn {
-  background: #1c3a5e;
+  background: var(--accent-blue);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -284,19 +431,26 @@ body {
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
+  font-family: var(--font-main);
+  font-weight: 600;
+  transition: all var(--transition-speed);
 }
 
 .add-btn:active {
-  background: #24507e;
+  transform: scale(0.97);
+  opacity: 0.8;
 }
 
-/* Summary */
+/* ===================================================== */
+/* بخش خلاصه */
+/* ===================================================== */
 .summary-section {
   margin-top: 28px;
-  background: #0d0d0d;
-  border: 1px solid #222;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 16px;
+  transition: all var(--transition-speed);
 }
 
 .summary-row {
@@ -308,55 +462,70 @@ body {
 }
 
 .summary-row label {
-  color: #aaa;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: color var(--transition-speed);
 }
 
 .summary-row.editable input {
-  background: #111;
-  border: 1px solid #333;
-  color: #fff;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 15px;
   width: 130px;
   text-align: left;
+  font-family: var(--font-main);
+  transition: all var(--transition-speed);
+}
+
+.summary-row.editable input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
 }
 
 .summary-value {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 17px;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
 .summary-value.advance-color {
-  color: #ffa500;
+  color: var(--accent-orange);
 }
 
 .summary-section hr {
   border: none;
-  border-top: 1px solid #222;
+  border-top: 1px solid var(--border-color);
   margin: 8px 0;
+  transition: border-color var(--transition-speed);
 }
 
 .summary-row.formula {
   font-size: 14px;
-  color: #999;
+  color: var(--text-muted);
 }
 
 .summary-row.formula .eq {
-  color: #555;
+  color: var(--text-dim);
 }
 
 .summary-row.formula .summary-value {
-  color: #7fd17f;
+  color: var(--accent-green);
 }
 
-/* Charts */
+/* ===================================================== */
+/* نمودارها */
+/* ===================================================== */
 .charts-section {
   margin-top: 20px;
-  background: #0d0d0d;
-  border: 1px solid #222;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 16px;
+  transition: all var(--transition-speed);
 }
 
 .chart-container {
@@ -375,21 +544,24 @@ body {
 .chart-bar .label {
   min-width: 60px;
   font-size: 13px;
-  color: #aaa;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: color var(--transition-speed);
 }
 
 .chart-bar .bar-track {
   flex: 1;
   height: 20px;
-  background: #222;
+  background: var(--bg-input);
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  transition: background var(--transition-speed);
 }
 
 .chart-bar .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4a9eff, #7fd17f);
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
   border-radius: 10px;
   transition: width 0.5s ease;
 }
@@ -398,7 +570,9 @@ body {
   min-width: 50px;
   font-size: 13px;
   text-align: left;
-  color: #ddd;
+  color: var(--text-secondary);
+  font-weight: 600;
+  transition: color var(--transition-speed);
 }
 
 .chart-stats {
@@ -409,33 +583,40 @@ body {
 }
 
 .chart-stats .stat-item {
-  background: #151515;
+  background: var(--bg-input);
   padding: 8px 12px;
   border-radius: 8px;
   text-align: center;
+  transition: background var(--transition-speed);
 }
 
 .chart-stats .stat-item .stat-value {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   display: block;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
 .chart-stats .stat-item .stat-label {
   font-size: 12px;
-  color: #888;
+  color: var(--text-muted);
+  transition: color var(--transition-speed);
 }
 
-/* Modals */
+/* ===================================================== */
+/* مودال‌ها */
+/* ===================================================== */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: var(--modal-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
   padding: 20px;
+  transition: background var(--transition-speed);
 }
 
 .modal.hidden {
@@ -443,14 +624,15 @@ body {
 }
 
 .modal-box {
-  background: #111;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   width: 100%;
   max-width: 420px;
   max-height: 80vh;
   overflow-y: auto;
   padding: 16px;
+  transition: all var(--transition-speed);
 }
 
 .modal-box.small {
@@ -463,10 +645,12 @@ body {
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: all var(--transition-speed);
 }
 
 .modal-body {
@@ -482,23 +666,31 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 8px;
-  border-bottom: 1px solid #1a1a1a;
+  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
+  transition: all var(--transition-speed);
 }
 
 .history-item:active {
-  background: #1a1a1a;
+  background: var(--bg-hover);
 }
 
 .history-item .h-date {
   font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
 .history-item .h-info {
   font-size: 13px;
-  color: #888;
+  color: var(--text-muted);
+  transition: color var(--transition-speed);
 }
 
+/* ===================================================== */
+/* تنظیمات */
+/* ===================================================== */
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -507,21 +699,31 @@ body {
 
 .settings-form label {
   font-size: 13px;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 6px;
+  font-weight: 500;
+  transition: color var(--transition-speed);
 }
 
 .settings-form input,
 .settings-form textarea {
-  background: #191919;
-  border: 1px solid #333;
-  color: #fff;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 10px;
   font-size: 15px;
   direction: ltr;
   text-align: left;
   width: 100%;
+  font-family: var(--font-main);
+  transition: all var(--transition-speed);
+}
+
+.settings-form input:focus,
+.settings-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
 }
 
 .settings-form textarea {
@@ -531,11 +733,14 @@ body {
 
 .settings-status {
   font-size: 13px;
-  color: #7fd17f;
+  color: var(--accent-green);
   min-height: 18px;
   text-align: center;
 }
 
+/* ===================================================== */
+/* دکمه‌های مودال */
+/* ===================================================== */
 .modal-buttons {
   display: flex;
   gap: 10px;
@@ -552,30 +757,49 @@ body {
   padding: 10px;
   cursor: pointer;
   min-width: 80px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  transition: all var(--transition-speed);
+}
+
+.danger-btn:active {
+  transform: scale(0.97);
 }
 
 .success-btn {
   flex: 1;
   background: #1a4a3a;
-  color: #7fd17f;
+  color: var(--accent-green);
   border: none;
   border-radius: 10px;
   padding: 10px;
   cursor: pointer;
   min-width: 80px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  transition: all var(--transition-speed);
+}
+
+.success-btn:active {
+  transform: scale(0.97);
 }
 
 #confirmText {
   font-size: 15px;
   line-height: 1.6;
+  color: var(--text-primary);
+  transition: color var(--transition-speed);
 }
 
+/* ===================================================== */
+/* Toast */
+/* ===================================================== */
 .toast {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #222;
+  background: var(--toast-bg);
   color: #fff;
   padding: 12px 24px;
   border-radius: 8px;
@@ -584,10 +808,15 @@ body {
   font-size: 14px;
   max-width: 90%;
   text-align: center;
-  border: 1px solid #444;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-main);
+  font-weight: 500;
+  transition: all var(--transition-speed);
 }
 
-/* Edit modal */
+/* ===================================================== */
+/* ویرایش */
+/* ===================================================== */
 .edit-form {
   display: flex;
   flex-direction: column;
@@ -595,15 +824,24 @@ body {
 }
 
 .edit-form input {
-  background: #191919;
-  border: 1px solid #333;
-  color: #fff;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 10px;
   font-size: 15px;
+  font-family: var(--font-main);
+  transition: all var(--transition-speed);
 }
 
-/* Responsive */
+.edit-form input:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+}
+
+/* ===================================================== */
+/* ریسپانسیو */
+/* ===================================================== */
 @media (max-width: 400px) {
   .item-actions {
     width: 100%;
@@ -618,13 +856,38 @@ body {
     padding: 8px;
     min-width: 60px;
   }
+  .month-title {
+    font-size: 17px;
+  }
 }
 
-/* PWA - fullscreen */
 @media (display-mode: standalone) {
   .topbar {
     padding-top: 28px;
   }
+}
+
+/* ===================================================== */
+/* اسکرول‌بار زیبا */
+/* ===================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  transition: background var(--transition-speed);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+  transition: background var(--transition-speed);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
 }
 </style>
 </head>
@@ -635,6 +898,7 @@ body {
   <header class="topbar">
     <button id="prevMonthBtn" class="icon-btn" title="ماه قبل">‹</button>
     <div class="month-title" id="monthTitle">ماه جاری</div>
+    <button id="themeToggle" class="theme-toggle" title="تغییر تم">🌙</button>
     <button id="settingsBtn" class="icon-btn" title="تنظیمات">⚙</button>
     <button id="nextMonthBtn" class="icon-btn" title="ماه بعد">›</button>
   </header>
@@ -666,7 +930,7 @@ body {
       </div>
 
       <div class="summary-row">
-        <label style="color: #ffa500;">خرج از دادگی</label>
+        <label style="color: var(--accent-orange);">خرج از دادگی</label>
         <div class="summary-value advance-color" id="advanceSpent">۰</div>
       </div>
 
@@ -700,8 +964,6 @@ body {
 </div>
 
 <div id="toast" class="toast"></div>
-
-<!-- Modals -->
 
 <div id="historyModal" class="modal hidden">
   <div class="modal-box">
@@ -854,13 +1116,56 @@ const toFa = (num) => {
 
 const monthKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
-const monthLabel = (key) => monthKeyToJalali(key);
+const monthLabel = (key) => {
+  if (!key) return 'نامشخص';
+  
+  try {
+    const [y, m] = key.split('-').map(Number);
+    
+    if (isNaN(y) || isNaN(m) || m < 1 || m > 12) {
+      return 'نامشخص';
+    }
+    
+    const j = gregorianToJalali(y, m, 1);
+    const monthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+    return `${monthNames[j.month - 1]} ${j.year}`;
+  } catch (e) {
+    console.error('Error in monthLabel:', e);
+    return 'نامشخص';
+  }
+};
 
 const STORAGE_PREFIX = 'budget_month_';
 const CURRENT_KEY = 'budget_current_month';
 const SETTINGS_KEY = 'budget_telegram_settings';
 const CHANGES_KEY = 'budget_pending_changes';
 const REPEAT_KEY = 'budget_repeat_items';
+const THEME_KEY = 'budget_theme';
+
+// =====================================================
+// Theme
+// =====================================================
+function getTheme() {
+  return localStorage.getItem(THEME_KEY) || 'dark';
+}
+
+function setTheme(theme) {
+  localStorage.setItem(THEME_KEY, theme);
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.getElementById('themeColorMeta');
+  if (theme === 'light') {
+    meta.content = '#f5f5f5';
+    document.getElementById('themeToggle').textContent = '🌙';
+  } else {
+    meta.content = '#000000';
+    document.getElementById('themeToggle').textContent = '☀️';
+  }
+}
+
+function toggleTheme() {
+  const current = getTheme();
+  setTheme(current === 'dark' ? 'light' : 'dark');
+}
 
 // =====================================================
 // State
@@ -1012,7 +1317,7 @@ function trackChange(type, data) {
 }
 
 // =====================================================
-// Submit Final
+// Submit Final - بدون تاریخ در بخش تغییرات
 // =====================================================
 async function submitFinal() {
   if (pendingChanges.items.length === 0) {
@@ -1024,7 +1329,6 @@ async function submitFinal() {
   
   let changesText = '📋 *تغییرات جدید:*\n';
   pendingChanges.items.forEach((change, index) => {
-    const date = change.persianDate || 'نامشخص';
     let desc = '';
     if (change.type === 'toggle') {
       const status = change.data.checked ? '✅ پرداخت شد' : '❌ لغو پرداخت';
@@ -1044,11 +1348,13 @@ async function submitFinal() {
     } else if (change.type === 'edit') {
       desc = `✏️ ویرایش: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
     }
-    changesText += `${index + 1}. ${desc} [${date}]\n`;
+    changesText += `${index + 1}. ${desc}\n`;
   });
 
+  const currentMonthName = monthLabel(currentMonthKey);
+  
   const summaryText = 
-    `📊 *خلاصه وضعیت مالی - ${monthLabel(currentMonthKey)}*\n\n` +
+    `📊 *خلاصه وضعیت مالی - ${currentMonthName}*\n\n` +
     `💰 کل: ${toFa(salary)} ریال\n` +
     `📤 دادگی: ${toFa(advance)} ریال\n` +
     `💸 خرج از کل: ${toFa(spentFromSalary)} ریال\n` +
@@ -1099,35 +1405,30 @@ function render() {
     const actions = document.createElement('div');
     actions.className = 'item-actions';
 
-    // دکمه دادگی
     const advanceBtn = document.createElement('button');
     advanceBtn.className = 'advance-btn' + (item.isAdvance ? ' active' : '');
     advanceBtn.textContent = 'دادگی';
     advanceBtn.title = 'پرداخت از دادگی';
     advanceBtn.addEventListener('click', () => onToggleAdvance(item.id));
 
-    // دکمه مهم
     const importantBtn = document.createElement('button');
     importantBtn.className = 'important-btn' + (item.important ? ' active' : '');
     importantBtn.textContent = '⭐';
     importantBtn.title = 'علامت‌گذاری به عنوان مهم';
     importantBtn.addEventListener('click', () => onToggleImportant(item.id));
 
-    // دکمه ویرایش
     const editBtn = document.createElement('button');
     editBtn.className = 'edit-btn';
     editBtn.textContent = '✏️';
     editBtn.title = 'ویرایش';
     editBtn.addEventListener('click', () => openEditModal(item.id));
 
-    // دکمه تکرار ماهانه
     const repeatBtn = document.createElement('button');
     repeatBtn.className = 'repeat-btn' + (item.repeat ? ' active' : '');
     repeatBtn.textContent = '🔄';
     repeatBtn.title = 'تکرار ماهانه';
     repeatBtn.addEventListener('click', () => onToggleRepeat(item.id));
 
-    // دکمه حذف
     const del = document.createElement('button');
     del.className = 'delete-item-btn';
     del.textContent = '×';
@@ -1220,7 +1521,6 @@ function onToggleRepeat(id) {
   
   item.repeat = !item.repeat;
   
-  // ذخیره در لیست آیتم‌های تکراری
   const repeatItems = loadRepeatItems();
   if (item.repeat) {
     repeatItems.push({ name: item.name, amount: item.amount });
@@ -1350,7 +1650,6 @@ function startNewMonth() {
     return;
   }
 
-  // اضافه کردن آیتم‌های تکراری به ماه جدید
   const repeatItems = loadRepeatItems();
   repeatItems.forEach(item => {
     state.items.push({
@@ -1365,8 +1664,11 @@ function startNewMonth() {
   });
 
   const { spentFromSalary, spentFromAdvance, salary, advance, remainingAdvance, remainingSalary } = calcTotals();
+  
+  const currentMonthName = monthLabel(currentMonthKey);
+  
   const summary =
-    `📅 *خلاصه ماه ${monthLabel(currentMonthKey)}*\n\n` +
+    `📅 *خلاصه ماه ${currentMonthName}*\n\n` +
     `💰 کل: ${toFa(salary)} ریال\n` +
     `📤 دادگی: ${toFa(advance)} ریال\n` +
     `💸 خرج از کل: ${toFa(spentFromSalary)} ریال\n` +
@@ -1442,7 +1744,6 @@ function renderCharts() {
   const allKeys = listAllMonthKeys().slice(0, 6);
   const currentData = calcTotals();
   
-  // آمار سریع
   stats.innerHTML = `
     <div class="stat-item">
       <span class="stat-value">${toFa(currentData.totalSpent)}</span>
@@ -1462,8 +1763,7 @@ function renderCharts() {
     </div>
   `;
   
-  // نمودار مقایسه ماه‌ها
-  let chartHTML = '<div style="margin-top:16px;"><div style="font-size:14px;color:#888;margin-bottom:8px;">مقایسه خرج ماه‌های اخیر:</div>';
+  let chartHTML = '<div style="margin-top:16px;"><div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">مقایسه خرج ماه‌های اخیر:</div>';
   
   const maxSpent = Math.max(...allKeys.map(k => {
     const data = loadMonth(k);
@@ -1528,22 +1828,18 @@ function importBackup(file) {
         throw new Error('فرمت فایل نامعتبر است');
       }
       
-      // بازیابی ماه‌ها
       Object.keys(data.months).forEach(key => {
         saveMonth(key, data.months[key]);
       });
       
-      // بازیابی تنظیمات
       if (data.settings) {
         saveTelegramSettings(data.settings.token || '', data.settings.chatId || '');
       }
       
-      // بازیابی آیتم‌های تکراری
       if (data.repeatItems) {
         saveRepeatItems(data.repeatItems);
       }
       
-      // بارگذاری مجدد
       switchToMonth(currentMonthKey);
       document.getElementById('backupStatus').textContent = '✅ بازیابی با موفقیت انجام شد';
       showToast('✅ اطلاعات با موفقیت بازیابی شد');
@@ -1556,12 +1852,10 @@ function importBackup(file) {
 }
 
 // =====================================================
-// PWA - Service Worker
+// PWA
 // =====================================================
 function registerSW() {
   if ('serviceWorker' in navigator) {
-    // برای PWA ساده، فقط manifest و meta tags کافی است
-    // این تابع برای پشتیبانی بیشتر در نظر گرفته شده
     console.log('PWA ready');
   }
 }
@@ -1569,6 +1863,11 @@ function registerSW() {
 // =====================================================
 // Wiring
 // =====================================================
+
+// Theme
+setTheme(getTheme());
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
 document.getElementById('addItemBtn').addEventListener('click', onAddItem);
 document.getElementById('newItemAmount').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') onAddItem();
@@ -1586,7 +1885,6 @@ document.getElementById('advanceTaken').addEventListener('input', (e) => {
 document.getElementById('prevMonthBtn').addEventListener('click', () => shiftMonth(-1));
 document.getElementById('nextMonthBtn').addEventListener('click', () => shiftMonth(1));
 
-// History
 document.getElementById('historyBtn').addEventListener('click', () => {
   renderHistory();
   document.getElementById('historyModal').classList.remove('hidden');
@@ -1595,7 +1893,6 @@ document.getElementById('closeHistoryBtn').addEventListener('click', () => {
   document.getElementById('historyModal').classList.add('hidden');
 });
 
-// Charts
 document.getElementById('chartBtn').addEventListener('click', () => {
   renderCharts();
   document.getElementById('chartModal').classList.remove('hidden');
@@ -1604,7 +1901,6 @@ document.getElementById('closeChartBtn').addEventListener('click', () => {
   document.getElementById('chartModal').classList.add('hidden');
 });
 
-// Backup
 document.getElementById('backupBtn').addEventListener('click', () => {
   document.getElementById('backupStatus').textContent = '';
   document.getElementById('backupModal').classList.remove('hidden');
@@ -1620,10 +1916,8 @@ document.getElementById('importFile').addEventListener('change', (e) => {
   e.target.value = '';
 });
 
-// Submit
 document.getElementById('submitFinalBtn').addEventListener('click', submitFinal);
 
-// New Month
 document.getElementById('newMonthBtn').addEventListener('click', () => {
   if (pendingChanges.items.length > 0) {
     showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
@@ -1642,7 +1936,6 @@ document.getElementById('confirmNo').addEventListener('click', () => {
   document.getElementById('confirmModal').classList.add('hidden');
 });
 
-// Settings
 document.getElementById('settingsBtn').addEventListener('click', () => {
   const { token, chatId } = getTelegramSettings();
   const repeatItems = loadRepeatItems();
@@ -1662,7 +1955,6 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   
   saveTelegramSettings(token, chatId);
   
-  // ذخیره آیتم‌های تکراری
   const repeatItems = repeatText.split('\n')
     .filter(line => line.trim())
     .map(line => {
@@ -1676,7 +1968,6 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   showToast('تنظیمات ذخیره شد');
 });
 
-// Edit
 document.getElementById('closeEditBtn').addEventListener('click', () => {
   document.getElementById('editModal').classList.add('hidden');
 });
@@ -1694,4 +1985,4 @@ console.log('تغییرات ثبت نشده:', pendingChanges.items.length);
 console.log('آیتم‌های تکراری:', loadRepeatItems().length);
 </script>
 </body>
-</html>
+        </html>
