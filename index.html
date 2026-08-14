@@ -2,327 +2,761 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>پیتزا گیتی</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حساب کتابی</title>
 <style>
-  :root{
-    --char:#120e0a;
-    --ember:#f2b705;
-    --flame:#d94f04;
-    --deep-red:#8a1c0f;
-    --smoke:#efe6d8;
-    --smoke-dim:#b8ab97;
-    --line:#3a2f24;
-    --ticket:#1a140f;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{
-    background:var(--char);
-    color:var(--smoke);
-    font-family:'Vazirmatn',sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    position:relative;
-    overflow-x:hidden;
-  }
-  
-  /* پس‌زمینه داینامیک */
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(217,79,4,0.12), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 80% 20%, rgba(242,183,5,0.08), transparent 50%),
-      var(--char);
-    z-index:0;
-  }
-  
-  /* دانه‌های ریز (grain) */
-  body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events:none;
-    z-index:1;
-    mix-blend-mode:overlay;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  /* ===== هدر ===== */
-  .hero{
-    text-align:center;
-    margin-bottom:45px;
-    position:relative;
-    z-index:2;
-  }
-  
-  .brand{
-    font-family:'Baloo 2', 'Vazirmatn', sans-serif;
-    font-weight:800;
-    font-size:clamp(48px, 14vw, 72px);
-    line-height:0.95;
-    color:var(--ember);
-    text-shadow:
-      0 0 40px rgba(242,183,5,0.15),
-      0 4px 20px rgba(0,0,0,0.4);
-    position:relative;
-    display:inline-block;
-    animation: fadeDown 0.8s ease-out;
-  }
-  .brand .fa{
-    color:var(--flame);
-    text-shadow:0 0 30px rgba(217,79,4,0.3);
-  }
-  
-  @keyframes fadeDown{
-    0%{opacity:0;transform:translateY(-20px);}
-    100%{opacity:1;transform:translateY(0);}
-  }
+body {
+  background: #000;
+  color: #fff;
+  font-family: Tahoma, 'Vazirmatn', sans-serif;
+  min-height: 100vh;
+}
 
-  .tagline{
-    margin-top:10px;
-    color:var(--smoke-dim);
-    font-size:14px;
-    letter-spacing:0.5px;
-    animation: fadeUp 0.8s ease-out 0.2s both;
-  }
-  @keyframes fadeUp{
-    0%{opacity:0;transform:translateY(12px);}
-    100%{opacity:1;transform:translateY(0);}
-  }
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-  .hero-strip{
-    margin-top:20px;
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-    animation: fadeUp 0.8s ease-out 0.3s both;
-  }
-  .pill{
-    color:var(--smoke);
-    text-decoration:none;
-    background:rgba(239,230,216,0.04);
-    border:1px solid var(--line);
-    padding:8px 16px;
-    border-radius:100px;
-    font-size:12.5px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    transition:all .25s;
-    backdrop-filter:blur(4px);
-  }
-  .pill:hover{
-    border-color:var(--ember);
-    background:rgba(242,183,5,0.06);
-    transform:scale(1.03);
-  }
-  .pill:active{transform:scale(0.96);}
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 16px;
+  border-bottom: 1px solid #222;
+}
 
-  /* ===== دکمه‌ها ===== */
-  .menu-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-    max-width:440px;
-    width:100%;
-    position:relative;
-    z-index:2;
-    animation: fadeUp 0.8s ease-out 0.5s both;
-  }
+.month-title {
+  font-size: 20px;
+  font-weight: bold;
+  flex: 1;
+  text-align: center;
+}
 
-  .menu-card{
-    background:linear-gradient(145deg, rgba(26,20,15,0.9), rgba(18,14,10,0.95));
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:28px 16px 22px;
-    text-align:center;
-    text-decoration:none;
-    color:var(--smoke);
-    transition:all .3s cubic-bezier(0.2, 0.9, 0.4, 1);
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    backdrop-filter:blur(4px);
-  }
-  
-  /* خط نورانی روی کارت‌ها */
-  .menu-card::before{
-    content:"";
-    position:absolute;
-    top:-50%;
-    left:-50%;
-    width:200%;
-    height:200%;
-    background:conic-gradient(from 0deg, transparent, rgba(242,183,5,0.03), transparent, rgba(217,79,4,0.03), transparent);
-    animation: rotateGlow 12s linear infinite;
-    opacity:0;
-    transition:opacity 0.4s;
-  }
-  .menu-card:hover::before{
-    opacity:1;
-  }
-  @keyframes rotateGlow{
-    to{transform:rotate(360deg);}
-  }
+.icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+}
 
-  .menu-card:hover{
-    border-color:var(--ember);
-    transform:translateY(-6px) scale(1.02);
-    box-shadow:
-      0 12px 40px rgba(0,0,0,0.5),
-      0 0 30px rgba(242,183,5,0.05);
-  }
-  .menu-card:active{
-    transform:scale(0.95) translateY(0);
-  }
+.icon-btn:active {
+  background: #222;
+}
 
-  .menu-card .icon{
-    font-size:42px;
-    display:block;
-    margin-bottom:10px;
-    position:relative;
-    z-index:2;
-    transition:transform 0.3s;
-  }
-  .menu-card:hover .icon{
-    transform:scale(1.12) rotate(-4deg);
-  }
+.month-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+}
 
-  .menu-card .name{
-    font-family:'Baloo 2', sans-serif;
-    font-weight:700;
-    font-size:20px;
-    color:var(--ember);
-    position:relative;
-    z-index:2;
-    display:block;
-  }
-  .menu-card .count{
-    font-size:12px;
-    color:var(--smoke-dim);
-    margin-top:4px;
-    position:relative;
-    z-index:2;
-    display:block;
-  }
-  
-  /* نشانگر کوچک روی کارت‌ها */
-  .menu-card .badge{
-    position:absolute;
-    top:12px;
-    left:12px;
-    font-size:9px;
-    color:var(--smoke-dim);
-    background:rgba(255,255,255,0.04);
-    padding:2px 10px;
-    border-radius:100px;
-    border:1px solid var(--line);
-    z-index:2;
-  }
+.ghost-btn {
+  flex: 1;
+  background: #151515;
+  color: #ccc;
+  border: 1px solid #333;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
 
-  /* ===== کارت بزرگ (بعلبکی) ===== */
-  .menu-card.card-big{
-    grid-column: span 2;
-    padding:30px 16px 26px;
-    background:linear-gradient(145deg, rgba(217,79,4,0.08), rgba(18,14,10,0.95));
-    border-color:rgba(217,79,4,0.25);
-  }
-  .menu-card.card-big:hover{
-    border-color:var(--flame);
-    box-shadow:0 12px 40px rgba(0,0,0,0.5), 0 0 40px rgba(217,79,4,0.06);
-  }
-  .menu-card.card-big .icon{font-size:48px;}
+.ghost-btn:active {
+  background: #222;
+}
 
-  /* ===== فوتر ===== */
-  .footer{
-    margin-top:45px;
-    text-align:center;
-    position:relative;
-    z-index:2;
-    animation: fadeUp 0.8s ease-out 0.7s both;
-  }
-  .footer .admin-link{
-    color:#5c5148;
-    text-decoration:none;
-    font-size:11.5px;
-    transition:color 0.25s;
-    padding:6px 14px;
-    border:1px solid var(--line);
-    border-radius:100px;
-    display:inline-block;
-  }
-  .footer .admin-link:hover{
-    color:var(--smoke-dim);
-    border-color:var(--smoke-dim);
-  }
+/* Content */
+.content {
+  padding: 8px 16px 40px;
+  flex: 1;
+}
 
-  /* ===== Responsive ===== */
-  @media (max-width:420px){
-    .menu-grid{gap:12px;}
-    .menu-card{padding:22px 12px 18px;}
-    .menu-card .icon{font-size:34px;}
-    .menu-card .name{font-size:17px;}
-    .menu-card.card-big .icon{font-size:40px;}
-    .hero{margin-bottom:32px;}
-    .brand{font-size:clamp(36px, 12vw, 52px);}
-  }
+.items-list {
+  list-style: none;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.item-row.checked .item-name,
+.item-row.checked .item-amount {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.item-checkbox {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  accent-color: #4a9eff;
+}
+
+.item-name {
+  flex: 1;
+  font-size: 17px;
+}
+
+.item-amount {
+  font-size: 17px;
+  color: #ddd;
+  min-width: 60px;
+  text-align: left;
+}
+
+.delete-item-btn {
+  background: none;
+  border: none;
+  color: #663333;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.add-item-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.add-item-row input {
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+#newItemName {
+  flex: 2;
+}
+
+#newItemAmount {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-btn {
+  background: #1c3a5e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-btn:active {
+  background: #24507e;
+}
+
+/* Summary */
+.summary-section {
+  margin-top: 28px;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.summary-row label {
+  color: #aaa;
+}
+
+.summary-row.editable input {
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 15px;
+  width: 130px;
+  text-align: left;
+}
+
+.summary-value {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.summary-section hr {
+  border: none;
+  border-top: 1px solid #222;
+  margin: 8px 0;
+}
+
+.summary-row.formula {
+  font-size: 14px;
+  color: #999;
+}
+
+.summary-row.formula .eq {
+  color: #555;
+}
+
+.summary-row.formula .summary-value {
+  color: #7fd17f;
+}
+
+/* Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-box {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.modal-box.small {
+  max-width: 320px;
+  text-align: center;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #222;
+}
+
+.history-list {
+  list-style: none;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid #1a1a1a;
+  cursor: pointer;
+}
+
+.history-item:active {
+  background: #1a1a1a;
+}
+
+.history-item .h-date {
+  font-size: 15px;
+}
+
+.history-item .h-info {
+  font-size: 13px;
+  color: #888;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-form label {
+  font-size: 13px;
+  color: #999;
+  margin-top: 6px;
+}
+
+.settings-form input {
+  background: #191919;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 15px;
+  direction: ltr;
+  text-align: left;
+}
+
+.settings-status {
+  font-size: 13px;
+  color: #7fd17f;
+  min-height: 18px;
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.danger-btn {
+  flex: 1;
+  background: #4a1c1c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#confirmText {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
 </style>
 </head>
 <body>
 
-<!-- ===== هدر ===== -->
-<div class="hero">
-  <h1 class="brand">پیتزا<span class="fa"> گیتی</span></h1>
-  <p class="tagline">مستقیم از روی آتش، تا سفارش شما</p>
-  <div class="hero-strip">
-    <a class="pill" href="tel:05632732596">☎ ۳۲۷۳۲۵۹۶</a>
-    <a class="pill" href="tel:05632738082">☎ ۳۲۷۳۸۰۸۲</a>
-    <a class="pill" href="#loc">📍 فردوس، خیابان امام</a>
+<div class="app">
+
+  <header class="topbar">
+    <button id="prevMonthBtn" class="icon-btn" title="ماه قبل">‹</button>
+    <div class="month-title" id="monthTitle">ماه جاری</div>
+    <button id="settingsBtn" class="icon-btn" title="تنظیمات تلگرام">⚙</button>
+    <button id="nextMonthBtn" class="icon-btn" title="ماه بعد">›</button>
+  </header>
+
+  <div class="month-actions">
+    <button id="historyBtn" class="ghost-btn">مرور ماه‌های قبلی</button>
+    <button id="newMonthBtn" class="ghost-btn">شروع ماه جدید</button>
+  </div>
+
+  <main class="content">
+
+    <section class="items-section">
+      <ul id="itemsList" class="items-list"></ul>
+
+      <div class="add-item-row">
+        <input type="text" id="newItemName" placeholder="اسم آیتم (مثلاً باشگاه)">
+        <input type="number" id="newItemAmount" placeholder="مبلغ">
+        <button id="addItemBtn" class="add-btn">+ افزودن</button>
+      </div>
+    </section>
+
+    <section class="summary-section">
+      <div class="summary-row">
+        <label>خرج</label>
+        <div class="summary-value" id="totalSpent">۰</div>
+      </div>
+
+      <div class="summary-row editable">
+        <label for="totalSalary">کل</label>
+        <input type="number" id="totalSalary" placeholder="کل حقوق">
+      </div>
+
+      <div class="summary-row editable">
+        <label for="advanceTaken">دادگی</label>
+        <input type="number" id="advanceTaken" placeholder="پیش‌دریافتی">
+      </div>
+
+      <hr>
+
+      <div class="summary-row formula">
+        <span id="formula1Label">کل − دادگی</span>
+        <span class="eq">=</span>
+        <span class="summary-value" id="remainingSalary">۰</span>
+      </div>
+
+      <div class="summary-row formula">
+        <span id="formula2Label">باقی‌مانده − خرج</span>
+        <span class="eq">=</span>
+        <span class="summary-value" id="finalLeft">۰</span>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<div id="historyModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>ماه‌های قبلی</span>
+      <button id="closeHistoryBtn" class="icon-btn">×</button>
+    </div>
+    <ul id="historyList" class="history-list"></ul>
   </div>
 </div>
 
-<!-- ===== منوی دسته‌بندی ===== -->
-<div class="menu-grid">
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>تنظیمات تلگرام</span>
+      <button id="closeSettingsBtn" class="icon-btn">×</button>
+    </div>
+    <div class="settings-form">
+      <label for="botToken">توکن بات</label>
+      <input type="text" id="botToken" placeholder="123456:ABC-...">
 
-  <a href="pizza.html" class="menu-card">
-    <span class="badge">🔥 محبوب</span>
-    <span class="icon">🍕</span>
-    <span class="name">پیتزا</span>
-  </a>
+      <label for="chatId">Chat ID</label>
+      <input type="text" id="chatId" placeholder="مثلاً 123456789">
 
-  <a href="sandwich.html" class="menu-card">
-    <span class="badge">🥪</span>
-    <span class="icon">🥪</span>
-    <span class="name">ساندویچ</span>
-  </a>
-
-  <a href="prefood.html" class="menu-card">
-    <span class="badge">🍟</span>
-    <span class="icon">🍟</span>
-    <span class="name">پیش غذا</span>
-  </a>
-
-  <a href="baloon.html" class="menu-card card-big">
-    <span class="badge">⭐ ویژه</span>
-    <span class="icon">🍽️</span>
-    <span class="name">بعلبکی</span>
-  </a>
-
+      <button id="saveSettingsBtn" class="add-btn">ذخیره تنظیمات</button>
+      <div id="settingsStatus" class="settings-status"></div>
+    </div>
+  </div>
 </div>
 
-<!-- ===== فوتر ===== -->
-<div class="footer">
-  <a class="admin-link" href="gheiti-menu-login.html">ورود مدیریت</a>
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-box small">
+    <p id="confirmText">مطمئنی؟</p>
+    <div class="modal-buttons">
+      <button id="confirmYes" class="danger-btn">بله</button>
+      <button id="confirmNo" class="ghost-btn">انصراف</button>
+    </div>
+  </div>
 </div>
 
+<script>
+// ---------- Helpers ----------
+const toFa = (num) => {
+  const n = Math.round(Number(num) || 0);
+  return n.toLocaleString('fa-IR');
+};
+
+const monthKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+const monthLabel = (key) => {
+  const [y, m] = key.split('-').map(Number);
+  const months = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  // key stored as Gregorian y-m for simplicity; show as "ماه/سال"
+  return `${String(m).padStart(2,'0')}/${y}`;
+};
+
+const STORAGE_PREFIX = 'budget_month_';
+const CURRENT_KEY = 'budget_current_month';
+const SETTINGS_KEY = 'budget_telegram_settings';
+
+// ---------- State ----------
+let currentMonthKey = localStorage.getItem(CURRENT_KEY) || monthKey(new Date());
+let state = loadMonth(currentMonthKey);
+
+function defaultState() {
+  return {
+    items: [],       // {id, name, amount, checked}
+    totalSalary: '',
+    advanceTaken: '',
+    closed: false     // true once a new month has been started from this one
+  };
+}
+
+function loadMonth(key) {
+  const raw = localStorage.getItem(STORAGE_PREFIX + key);
+  return raw ? JSON.parse(raw) : defaultState();
+}
+
+function saveMonth(key, data) {
+  localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data));
+}
+
+function saveCurrentPointer(key) {
+  localStorage.setItem(CURRENT_KEY, key);
+}
+
+function listAllMonthKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith(STORAGE_PREFIX)) keys.push(k.replace(STORAGE_PREFIX, ''));
+  }
+  return keys.sort().reverse();
+}
+
+// ---------- Telegram ----------
+function getTelegramSettings() {
+  const raw = localStorage.getItem(SETTINGS_KEY);
+  return raw ? JSON.parse(raw) : { token: '', chatId: '' };
+}
+
+function saveTelegramSettings(token, chatId) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ token, chatId }));
+}
+
+async function sendTelegramMessage(text) {
+  const { token, chatId } = getTelegramSettings();
+  if (!token || !chatId) return; // silently skip if not configured
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text })
+    });
+  } catch (err) {
+    console.error('Telegram send failed:', err);
+  }
+}
+
+// ---------- Calculations ----------
+function calcTotals() {
+  const spent = state.items.filter(i => i.checked).reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  const salary = Number(state.totalSalary) || 0;
+  const advance = Number(state.advanceTaken) || 0;
+  const remaining = salary - advance;
+  const finalLeft = remaining - spent;
+  return { spent, salary, advance, remaining, finalLeft };
+}
+
+// ---------- Rendering ----------
+function render() {
+  document.getElementById('monthTitle').textContent = monthLabel(currentMonthKey);
+
+  const list = document.getElementById('itemsList');
+  list.innerHTML = '';
+  state.items.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'item-row' + (item.checked ? ' checked' : '');
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'item-checkbox';
+    cb.checked = item.checked;
+    cb.addEventListener('change', () => onToggleItem(item.id, cb.checked));
+
+    const name = document.createElement('span');
+    name.className = 'item-name';
+    name.textContent = item.name;
+
+    const amount = document.createElement('span');
+    amount.className = 'item-amount';
+    amount.textContent = toFa(item.amount);
+
+    const del = document.createElement('button');
+    del.className = 'delete-item-btn';
+    del.textContent = '×';
+    del.addEventListener('click', () => onDeleteItem(item.id));
+
+    li.appendChild(cb);
+    li.appendChild(name);
+    li.appendChild(amount);
+    li.appendChild(del);
+    list.appendChild(li);
+  });
+
+  document.getElementById('totalSalary').value = state.totalSalary;
+  document.getElementById('advanceTaken').value = state.advanceTaken;
+
+  const { spent, remaining, finalLeft } = calcTotals();
+  document.getElementById('totalSpent').textContent = toFa(spent);
+  document.getElementById('remainingSalary').textContent = toFa(remaining);
+  document.getElementById('finalLeft').textContent = toFa(finalLeft);
+
+  saveMonth(currentMonthKey, state);
+}
+
+// ---------- Event handlers ----------
+function onToggleItem(id, checked) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  item.checked = checked;
+  render();
+
+  if (checked) {
+    const { spent, remaining, finalLeft } = calcTotals();
+    const msg =
+      `✅ ${item.name} پرداخت شد: ${toFa(item.amount)}\n\n` +
+      `ماه ${monthLabel(currentMonthKey)}\n` +
+      `خرج تا الان: ${toFa(spent)}\n` +
+      `باقی‌مانده بعد از خرج: ${toFa(finalLeft)}`;
+    sendTelegramMessage(msg);
+  }
+}
+
+function onDeleteItem(id) {
+  state.items = state.items.filter(i => i.id !== id);
+  render();
+}
+
+function onAddItem() {
+  const nameInput = document.getElementById('newItemName');
+  const amountInput = document.getElementById('newItemAmount');
+  const name = nameInput.value.trim();
+  const amount = amountInput.value.trim();
+  if (!name || !amount) return;
+
+  state.items.push({
+    id: Date.now().toString(),
+    name,
+    amount: Number(amount),
+    checked: false
+  });
+
+  nameInput.value = '';
+  amountInput.value = '';
+  render();
+}
+
+function switchToMonth(key) {
+  currentMonthKey = key;
+  state = loadMonth(key);
+  saveCurrentPointer(key);
+  render();
+}
+
+function shiftMonth(delta) {
+  const [y, m] = currentMonthKey.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  switchToMonth(monthKey(d));
+}
+
+function startNewMonth() {
+  // Summarize current month and send to Telegram before moving on
+  const { spent, salary, advance, remaining, finalLeft } = calcTotals();
+  const summary =
+    `📅 خلاصه ماه ${monthLabel(currentMonthKey)}\n\n` +
+    `کل حقوق: ${toFa(salary)}\n` +
+    `دادگی: ${toFa(advance)}\n` +
+    `خرج شده: ${toFa(spent)}\n` +
+    `باقی‌مانده حقوق: ${toFa(remaining)}\n` +
+    `باقی‌مانده نهایی: ${toFa(finalLeft)}`;
+  sendTelegramMessage(summary);
+
+  state.closed = true;
+  saveMonth(currentMonthKey, state);
+
+  const [y, m] = currentMonthKey.split('-').map(Number);
+  const nextDate = new Date(y, m, 1); // next month
+  const nextKey = monthKey(nextDate);
+  currentMonthKey = nextKey;
+  state = defaultState();
+  saveCurrentPointer(nextKey);
+  render();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+  const keys = listAllMonthKeys();
+
+  if (keys.length === 0) {
+    list.innerHTML = '<li class="history-item"><span class="h-info">هنوز ماهی ثبت نشده</span></li>';
+    return;
+  }
+
+  keys.forEach(key => {
+    const data = loadMonth(key);
+    const spent = data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+
+    const li = document.createElement('li');
+    li.className = 'history-item';
+
+    const left = document.createElement('span');
+    left.className = 'h-date';
+    left.textContent = monthLabel(key);
+
+    const right = document.createElement('span');
+    right.className = 'h-info';
+    right.textContent = `خرج: ${toFa(spent)}`;
+
+    li.appendChild(left);
+    li.appendChild(right);
+    li.addEventListener('click', () => {
+      switchToMonth(key);
+      document.getElementById('historyModal').classList.add('hidden');
+    });
+    list.appendChild(li);
+  });
+}
+
+// ---------- Wiring ----------
+document.getElementById('addItemBtn').addEventListener('click', onAddItem);
+document.getElementById('newItemAmount').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') onAddItem();
+});
+
+document.getElementById('totalSalary').addEventListener('input', (e) => {
+  state.totalSalary = e.target.value;
+  render();
+});
+document.getElementById('advanceTaken').addEventListener('input', (e) => {
+  state.advanceTaken = e.target.value;
+  render();
+});
+
+document.getElementById('prevMonthBtn').addEventListener('click', () => shiftMonth(-1));
+document.getElementById('nextMonthBtn').addEventListener('click', () => shiftMonth(1));
+
+document.getElementById('historyBtn').addEventListener('click', () => {
+  renderHistory();
+  document.getElementById('historyModal').classList.remove('hidden');
+});
+document.getElementById('closeHistoryBtn').addEventListener('click', () => {
+  document.getElementById('historyModal').classList.add('hidden');
+});
+
+document.getElementById('newMonthBtn').addEventListener('click', () => {
+  document.getElementById('confirmText').textContent =
+    'شروع ماه جدید یعنی خلاصه ماه فعلی به تلگرام فرستاده میشه و یه لیست خالی جدید باز میشه. ادامه بدم؟';
+  document.getElementById('confirmModal').classList.remove('hidden');
+});
+document.getElementById('confirmYes').addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.add('hidden');
+  startNewMonth();
+});
+document.getElementById('confirmNo').addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.add('hidden');
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  const { token, chatId } = getTelegramSettings();
+  document.getElementById('botToken').value = token;
+  document.getElementById('chatId').value = chatId;
+  document.getElementById('settingsStatus').textContent = '';
+  document.getElementById('settingsModal').classList.remove('hidden');
+});
+document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsModal').classList.add('hidden');
+});
+document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+  const token = document.getElementById('botToken').value.trim();
+  const chatId = document.getElementById('chatId').value.trim();
+  saveTelegramSettings(token, chatId);
+  document.getElementById('settingsStatus').textContent = 'ذخیره شد ✓';
+});
+
+// ---------- Init ----------
+render();
+
+</script>
 </body>
 </html>
-
