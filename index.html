@@ -2,8 +2,12 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>حساب کتابی</title>
+<link rel="manifest" href="data:application/json,{}">
+<meta name="theme-color" content="#000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 * {
   box-sizing: border-box;
@@ -16,6 +20,7 @@ body {
   color: #fff;
   font-family: Tahoma, 'Vazirmatn', sans-serif;
   min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .app {
@@ -33,6 +38,10 @@ body {
   justify-content: space-between;
   padding: 18px 16px;
   border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  background: #000;
+  z-index: 10;
 }
 
 .month-title {
@@ -58,7 +67,7 @@ body {
 
 .month-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   padding: 12px 16px;
   flex-wrap: wrap;
 }
@@ -72,7 +81,8 @@ body {
   border-radius: 10px;
   font-size: 13px;
   cursor: pointer;
-  min-width: 100px;
+  min-width: 80px;
+  text-align: center;
 }
 
 .ghost-btn:active {
@@ -102,9 +112,10 @@ body {
 .item-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 0;
+  gap: 8px;
+  padding: 12px 0;
   border-bottom: 1px solid #1a1a1a;
+  flex-wrap: wrap;
 }
 
 .item-row.checked .item-name,
@@ -113,9 +124,19 @@ body {
   color: #666;
 }
 
+.item-row.advance .item-name,
+.item-row.advance .item-amount {
+  color: #ffa500;
+}
+
+.item-row.important .item-name::before {
+  content: "⭐ ";
+  color: #ffd700;
+}
+
 .item-checkbox {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
   accent-color: #4a9eff;
 }
@@ -123,6 +144,8 @@ body {
 .item-name {
   flex: 1;
   font-size: 17px;
+  min-width: 80px;
+  word-break: break-word;
 }
 
 .item-amount {
@@ -130,6 +153,89 @@ body {
   color: #ddd;
   min-width: 60px;
   text-align: left;
+}
+
+.item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.advance-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #ffa500;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.advance-btn.active {
+  background: #ffa500;
+  color: #000;
+  border-color: #ffa500;
+}
+
+.advance-btn:active {
+  transform: scale(0.95);
+}
+
+.important-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #ffd700;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.important-btn.active {
+  background: #ffd700;
+  color: #000;
+  border-color: #ffd700;
+}
+
+.important-btn:active {
+  transform: scale(0.95);
+}
+
+.edit-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #4a9eff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.edit-btn:active {
+  background: #4a9eff;
+  color: #000;
+}
+
+.repeat-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #9b59b6;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.repeat-btn.active {
+  background: #9b59b6;
+  color: #fff;
+  border-color: #9b59b6;
 }
 
 .delete-item-btn {
@@ -141,6 +247,7 @@ body {
   padding: 4px 8px;
 }
 
+/* Add item */
 .add-item-row {
   display: flex;
   gap: 8px;
@@ -156,7 +263,7 @@ body {
   padding: 10px;
   font-size: 15px;
   flex: 1;
-  min-width: 100px;
+  min-width: 80px;
 }
 
 #newItemName {
@@ -220,6 +327,10 @@ body {
   font-size: 17px;
 }
 
+.summary-value.advance-color {
+  color: #ffa500;
+}
+
 .summary-section hr {
   border: none;
   border-top: 1px solid #222;
@@ -239,11 +350,87 @@ body {
   color: #7fd17f;
 }
 
+/* Charts */
+.charts-section {
+  margin-top: 20px;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.chart-container {
+  margin: 10px 0;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.chart-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.chart-bar .label {
+  min-width: 60px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.chart-bar .bar-track {
+  flex: 1;
+  height: 20px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chart-bar .bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9eff, #7fd17f);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.chart-bar .bar-value {
+  min-width: 50px;
+  font-size: 13px;
+  text-align: left;
+  color: #ddd;
+}
+
+.chart-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chart-stats .stat-item {
+  background: #151515;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.chart-stats .stat-item .stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+}
+
+.chart-stats .stat-item .stat-label {
+  font-size: 12px;
+  color: #888;
+}
+
 /* Modals */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,6 +467,10 @@ body {
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid #222;
+}
+
+.modal-body {
+  padding: 4px 0;
 }
 
 .history-list {
@@ -320,7 +511,8 @@ body {
   margin-top: 6px;
 }
 
-.settings-form input {
+.settings-form input,
+.settings-form textarea {
   background: #191919;
   border: 1px solid #333;
   color: #fff;
@@ -329,6 +521,12 @@ body {
   font-size: 15px;
   direction: ltr;
   text-align: left;
+  width: 100%;
+}
+
+.settings-form textarea {
+  min-height: 60px;
+  resize: vertical;
 }
 
 .settings-status {
@@ -342,6 +540,7 @@ body {
   display: flex;
   gap: 10px;
   margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 .danger-btn {
@@ -352,6 +551,18 @@ body {
   border-radius: 10px;
   padding: 10px;
   cursor: pointer;
+  min-width: 80px;
+}
+
+.success-btn {
+  flex: 1;
+  background: #1a4a3a;
+  color: #7fd17f;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  min-width: 80px;
 }
 
 #confirmText {
@@ -376,6 +587,45 @@ body {
   border: 1px solid #444;
 }
 
+/* Edit modal */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-form input {
+  background: #191919;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .item-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .item-actions button {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  .month-actions .ghost-btn {
+    font-size: 11px;
+    padding: 8px;
+    min-width: 60px;
+  }
+}
+
+/* PWA - fullscreen */
+@media (display-mode: standalone) {
+  .topbar {
+    padding-top: 28px;
+  }
+}
 </style>
 </head>
 <body>
@@ -385,13 +635,15 @@ body {
   <header class="topbar">
     <button id="prevMonthBtn" class="icon-btn" title="ماه قبل">‹</button>
     <div class="month-title" id="monthTitle">ماه جاری</div>
-    <button id="settingsBtn" class="icon-btn" title="تنظیمات تلگرام">⚙</button>
+    <button id="settingsBtn" class="icon-btn" title="تنظیمات">⚙</button>
     <button id="nextMonthBtn" class="icon-btn" title="ماه بعد">›</button>
   </header>
 
   <div class="month-actions">
-    <button id="historyBtn" class="ghost-btn">مرور ماه‌های قبلی</button>
-    <button id="newMonthBtn" class="ghost-btn">شروع ماه جدید</button>
+    <button id="historyBtn" class="ghost-btn">📋 تاریخچه</button>
+    <button id="chartBtn" class="ghost-btn">📊 آمار</button>
+    <button id="backupBtn" class="ghost-btn">💾 پشتیبان</button>
+    <button id="newMonthBtn" class="ghost-btn">📅 ماه جدید</button>
     <button id="submitFinalBtn" class="ghost-btn submit-btn">📤 ثبت نهایی</button>
   </div>
 
@@ -401,7 +653,7 @@ body {
       <ul id="itemsList" class="items-list"></ul>
 
       <div class="add-item-row">
-        <input type="text" id="newItemName" placeholder="اسم آیتم (مثلاً باشگاه)">
+        <input type="text" id="newItemName" placeholder="اسم آیتم">
         <input type="number" id="newItemAmount" placeholder="مبلغ">
         <button id="addItemBtn" class="add-btn">+ افزودن</button>
       </div>
@@ -409,8 +661,13 @@ body {
 
     <section class="summary-section">
       <div class="summary-row">
-        <label>خرج</label>
+        <label>خرج از کل</label>
         <div class="summary-value" id="totalSpent">۰</div>
+      </div>
+
+      <div class="summary-row">
+        <label style="color: #ffa500;">خرج از دادگی</label>
+        <div class="summary-value advance-color" id="advanceSpent">۰</div>
       </div>
 
       <div class="summary-row editable">
@@ -426,13 +683,13 @@ body {
       <hr>
 
       <div class="summary-row formula">
-        <span id="formula1Label">کل − دادگی</span>
+        <span>کل − دادگی</span>
         <span class="eq">=</span>
         <span class="summary-value" id="remainingSalary">۰</span>
       </div>
 
       <div class="summary-row formula">
-        <span id="formula2Label">باقی‌مانده − خرج</span>
+        <span>باقی‌مانده − خرج از کل</span>
         <span class="eq">=</span>
         <span class="summary-value" id="finalLeft">۰</span>
       </div>
@@ -444,28 +701,63 @@ body {
 
 <div id="toast" class="toast"></div>
 
+<!-- Modals -->
+
 <div id="historyModal" class="modal hidden">
   <div class="modal-box">
     <div class="modal-header">
-      <span>ماه‌های قبلی</span>
+      <span>📋 تاریخچه ماه‌ها</span>
       <button id="closeHistoryBtn" class="icon-btn">×</button>
     </div>
     <ul id="historyList" class="history-list"></ul>
   </div>
 </div>
 
+<div id="chartModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>📊 گزارش تحلیلی</span>
+      <button id="closeChartBtn" class="icon-btn">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="chart-stats" id="chartStats"></div>
+      <div class="chart-container" id="chartContainer"></div>
+    </div>
+  </div>
+</div>
+
+<div id="backupModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>💾 پشتیبان‌گیری</span>
+      <button id="closeBackupBtn" class="icon-btn">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button id="exportBtn" class="success-btn">📤 خروجی گرفتن</button>
+        <label for="importFile" class="ghost-btn" style="text-align:center;cursor:pointer;">📥 بازیابی از فایل</label>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+        <div id="backupStatus" class="settings-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="settingsModal" class="modal hidden">
   <div class="modal-box">
     <div class="modal-header">
-      <span>تنظیمات تلگرام</span>
+      <span>⚙ تنظیمات</span>
       <button id="closeSettingsBtn" class="icon-btn">×</button>
     </div>
     <div class="settings-form">
-      <label for="botToken">توکن بات</label>
+      <label for="botToken">توکن بات تلگرام</label>
       <input type="text" id="botToken" placeholder="123456:ABC-...">
 
       <label for="chatId">Chat ID</label>
       <input type="text" id="chatId" placeholder="مثلاً 123456789">
+
+      <label for="repeatItems">آیتم‌های تکراری (هر خط یک آیتم: نام,مبلغ)</label>
+      <textarea id="repeatItems" placeholder="اجاره,5000000&#10;اینترنت,500000"></textarea>
 
       <button id="saveSettingsBtn" class="add-btn">ذخیره تنظیمات</button>
       <div id="settingsStatus" class="settings-status"></div>
@@ -483,9 +775,24 @@ body {
   </div>
 </div>
 
+<div id="editModal" class="modal hidden">
+  <div class="modal-box small">
+    <div class="modal-header">
+      <span>✏️ ویرایش آیتم</span>
+      <button id="closeEditBtn" class="icon-btn">×</button>
+    </div>
+    <div class="edit-form">
+      <input type="text" id="editName" placeholder="نام">
+      <input type="number" id="editAmount" placeholder="مبلغ">
+      <button id="saveEditBtn" class="add-btn">ذخیره تغییرات</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ---------- کتابخانه تبدیل تاریخ شمسی ----------
-// تبدیل تاریخ میلادی به شمسی
+// =====================================================
+// کتابخانه تبدیل تاریخ شمسی
+// =====================================================
 function gregorianToJalali(gy, gm, gd) {
   const g_days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const j_days_in_month = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
@@ -520,30 +827,26 @@ function gregorianToJalali(gy, gm, gd) {
   return { year: jy, month: jm, day: jd };
 }
 
-// تبدیل تاریخ میلادی به شمسی با فرمت فارسی
 function toPersianDate(date) {
   const j = gregorianToJalali(
     date.getFullYear(),
     date.getMonth() + 1,
     date.getDate()
   );
-  
   const monthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
-  const monthName = monthNames[j.month - 1];
-  
-  return `${j.day} ${monthName} ${j.year}`;
+  return `${j.day} ${monthNames[j.month - 1]} ${j.year}`;
 }
 
-// تبدیل تاریخ میلادی به شمسی برای کلید ماه
 function monthKeyToJalali(key) {
   const [y, m] = key.split('-').map(Number);
-  // روز اول ماه
   const j = gregorianToJalali(y, m, 1);
   const monthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   return `${monthNames[j.month - 1]} ${j.year}`;
 }
 
-// ---------- Helpers ----------
+// =====================================================
+// Helpers
+// =====================================================
 const toFa = (num) => {
   const n = Math.round(Number(num) || 0);
   return n.toLocaleString('fa-IR');
@@ -551,23 +854,25 @@ const toFa = (num) => {
 
 const monthKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
-const monthLabel = (key) => {
-  return monthKeyToJalali(key);
-};
+const monthLabel = (key) => monthKeyToJalali(key);
 
 const STORAGE_PREFIX = 'budget_month_';
 const CURRENT_KEY = 'budget_current_month';
 const SETTINGS_KEY = 'budget_telegram_settings';
 const CHANGES_KEY = 'budget_pending_changes';
+const REPEAT_KEY = 'budget_repeat_items';
 
-// ---------- State ----------
+// =====================================================
+// State
+// =====================================================
 let currentMonthKey = localStorage.getItem(CURRENT_KEY) || monthKey(new Date());
 let state = loadMonth(currentMonthKey);
 let pendingChanges = loadPendingChanges();
+let editItemId = null;
 
 function defaultState() {
   return {
-    items: [],       // {id, name, amount, checked}
+    items: [],
     totalSalary: '',
     advanceTaken: '',
     closed: false
@@ -596,6 +901,15 @@ function savePendingChanges() {
   localStorage.setItem(CHANGES_KEY, JSON.stringify(pendingChanges));
 }
 
+function loadRepeatItems() {
+  const raw = localStorage.getItem(REPEAT_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveRepeatItems(items) {
+  localStorage.setItem(REPEAT_KEY, JSON.stringify(items));
+}
+
 function listAllMonthKeys() {
   const keys = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -605,7 +919,9 @@ function listAllMonthKeys() {
   return keys.sort().reverse();
 }
 
-// ---------- Telegram ----------
+// =====================================================
+// Telegram
+// =====================================================
 function getTelegramSettings() {
   const raw = localStorage.getItem(SETTINGS_KEY);
   return raw ? JSON.parse(raw) : { token: '', chatId: '' };
@@ -639,7 +955,9 @@ async function sendTelegramMessage(text) {
   }
 }
 
-// ---------- Toast ----------
+// =====================================================
+// Toast
+// =====================================================
 function showToast(message, duration = 3000) {
   const toast = document.getElementById('toast');
   toast.textContent = message;
@@ -650,21 +968,42 @@ function showToast(message, duration = 3000) {
   }, duration);
 }
 
-// ---------- Calculations ----------
+// =====================================================
+// Calculations
+// =====================================================
 function calcTotals() {
-  const spent = state.items.filter(i => i.checked).reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  const spentFromSalary = state.items
+    .filter(i => i.checked && !i.isAdvance)
+    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  
+  const spentFromAdvance = state.items
+    .filter(i => i.checked && i.isAdvance)
+    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  
   const salary = Number(state.totalSalary) || 0;
   const advance = Number(state.advanceTaken) || 0;
-  const remaining = salary - advance;
-  const finalLeft = remaining - spent;
-  return { spent, salary, advance, remaining, finalLeft };
+  
+  const remainingAdvance = advance - spentFromAdvance;
+  const remainingSalary = salary - advance - spentFromSalary;
+  
+  return { 
+    spentFromSalary, 
+    spentFromAdvance, 
+    salary, 
+    advance, 
+    remainingAdvance,
+    remainingSalary,
+    totalSpent: spentFromSalary + spentFromAdvance
+  };
 }
 
-// ---------- تغییرات ثبت نشده ----------
+// =====================================================
+// Track Changes
+// =====================================================
 function trackChange(type, data) {
   const now = new Date();
   pendingChanges.items.push({
-    type: type, // 'toggle', 'add', 'delete', 'edit'
+    type: type,
     data: data,
     timestamp: now.toISOString(),
     persianDate: toPersianDate(now)
@@ -672,27 +1011,38 @@ function trackChange(type, data) {
   savePendingChanges();
 }
 
-// ---------- ثبت نهایی ----------
+// =====================================================
+// Submit Final
+// =====================================================
 async function submitFinal() {
   if (pendingChanges.items.length === 0) {
     showToast('هیچ تغییر جدیدی برای ثبت وجود ندارد');
     return;
   }
 
-  const { spent, salary, advance, remaining, finalLeft } = calcTotals();
+  const { spentFromSalary, spentFromAdvance, salary, advance, remainingAdvance, remainingSalary } = calcTotals();
   
-  // ساخت پیام خلاصه
   let changesText = '📋 *تغییرات جدید:*\n';
   pendingChanges.items.forEach((change, index) => {
     const date = change.persianDate || 'نامشخص';
     let desc = '';
     if (change.type === 'toggle') {
       const status = change.data.checked ? '✅ پرداخت شد' : '❌ لغو پرداخت';
-      desc = `${status}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
+      const from = change.data.isAdvance ? ' (از دادگی)' : ' (از کل)';
+      desc = `${status}${from}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
     } else if (change.type === 'add') {
-      desc = `➕ افزوده شد: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
+      const star = change.data.important ? ' ⭐' : '';
+      desc = `➕ افزوده شد${star}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
     } else if (change.type === 'delete') {
       desc = `🗑️ حذف شد: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
+    } else if (change.type === 'advance') {
+      const status = change.data.isAdvance ? '🔶 از دادگی' : '🔷 از کل';
+      desc = `تغییر منبع: ${change.data.name} → ${status}`;
+    } else if (change.type === 'important') {
+      const status = change.data.important ? '⭐ مهم' : '🔹 عادی';
+      desc = `تغییر اهمیت: ${change.data.name} → ${status}`;
+    } else if (change.type === 'edit') {
+      desc = `✏️ ویرایش: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
     }
     changesText += `${index + 1}. ${desc} [${date}]\n`;
   });
@@ -701,15 +1051,15 @@ async function submitFinal() {
     `📊 *خلاصه وضعیت مالی - ${monthLabel(currentMonthKey)}*\n\n` +
     `💰 کل: ${toFa(salary)} ریال\n` +
     `📤 دادگی: ${toFa(advance)} ریال\n` +
-    `💸 خرج شده: ${toFa(spent)} ریال\n` +
-    `📈 باقی‌مانده: ${toFa(remaining)} ریال\n` +
-    `🎯 مانده نهایی: ${toFa(finalLeft)} ریال\n\n` +
+    `💸 خرج از کل: ${toFa(spentFromSalary)} ریال\n` +
+    `🔶 خرج از دادگی: ${toFa(spentFromAdvance)} ریال\n` +
+    `📈 دادگی باقی‌مانده: ${toFa(remainingAdvance)} ریال\n` +
+    `🎯 مانده نهایی: ${toFa(remainingSalary)} ریال\n\n` +
     changesText;
 
   const success = await sendTelegramMessage(summaryText);
   
   if (success) {
-    // پاک کردن تغییرات ثبت شده
     pendingChanges.items = [];
     pendingChanges.lastSubmit = new Date().toISOString();
     savePendingChanges();
@@ -717,7 +1067,9 @@ async function submitFinal() {
   }
 }
 
-// ---------- Rendering ----------
+// =====================================================
+// Render
+// =====================================================
 function render() {
   document.getElementById('monthTitle').textContent = monthLabel(currentMonthKey);
 
@@ -725,7 +1077,10 @@ function render() {
   list.innerHTML = '';
   state.items.forEach(item => {
     const li = document.createElement('li');
-    li.className = 'item-row' + (item.checked ? ' checked' : '');
+    li.className = 'item-row' + 
+      (item.checked ? ' checked' : '') + 
+      (item.isAdvance ? ' advance' : '') +
+      (item.important ? ' important' : '');
 
     const cb = document.createElement('input');
     cb.type = 'checkbox';
@@ -741,51 +1096,148 @@ function render() {
     amount.className = 'item-amount';
     amount.textContent = toFa(item.amount);
 
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+
+    // دکمه دادگی
+    const advanceBtn = document.createElement('button');
+    advanceBtn.className = 'advance-btn' + (item.isAdvance ? ' active' : '');
+    advanceBtn.textContent = 'دادگی';
+    advanceBtn.title = 'پرداخت از دادگی';
+    advanceBtn.addEventListener('click', () => onToggleAdvance(item.id));
+
+    // دکمه مهم
+    const importantBtn = document.createElement('button');
+    importantBtn.className = 'important-btn' + (item.important ? ' active' : '');
+    importantBtn.textContent = '⭐';
+    importantBtn.title = 'علامت‌گذاری به عنوان مهم';
+    importantBtn.addEventListener('click', () => onToggleImportant(item.id));
+
+    // دکمه ویرایش
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-btn';
+    editBtn.textContent = '✏️';
+    editBtn.title = 'ویرایش';
+    editBtn.addEventListener('click', () => openEditModal(item.id));
+
+    // دکمه تکرار ماهانه
+    const repeatBtn = document.createElement('button');
+    repeatBtn.className = 'repeat-btn' + (item.repeat ? ' active' : '');
+    repeatBtn.textContent = '🔄';
+    repeatBtn.title = 'تکرار ماهانه';
+    repeatBtn.addEventListener('click', () => onToggleRepeat(item.id));
+
+    // دکمه حذف
     const del = document.createElement('button');
     del.className = 'delete-item-btn';
     del.textContent = '×';
     del.addEventListener('click', () => onDeleteItem(item.id));
 
+    actions.appendChild(advanceBtn);
+    actions.appendChild(importantBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(repeatBtn);
+    actions.appendChild(del);
+
     li.appendChild(cb);
     li.appendChild(name);
     li.appendChild(amount);
-    li.appendChild(del);
+    li.appendChild(actions);
     list.appendChild(li);
   });
 
   document.getElementById('totalSalary').value = state.totalSalary;
   document.getElementById('advanceTaken').value = state.advanceTaken;
 
-  const { spent, remaining, finalLeft } = calcTotals();
-  document.getElementById('totalSpent').textContent = toFa(spent);
-  document.getElementById('remainingSalary').textContent = toFa(remaining);
-  document.getElementById('finalLeft').textContent = toFa(finalLeft);
+  const { spentFromSalary, spentFromAdvance, remainingSalary, remainingAdvance } = calcTotals();
+  document.getElementById('totalSpent').textContent = toFa(spentFromSalary);
+  document.getElementById('advanceSpent').textContent = toFa(spentFromAdvance);
+  document.getElementById('remainingSalary').textContent = toFa(remainingSalary);
+  document.getElementById('finalLeft').textContent = toFa(remainingAdvance);
 
   saveMonth(currentMonthKey, state);
 }
 
-// ---------- Event handlers ----------
+// =====================================================
+// Event Handlers
+// =====================================================
 function onToggleItem(id, checked) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
   item.checked = checked;
   
-  // ثبت تغییر
   trackChange('toggle', {
     id: item.id,
     name: item.name,
     amount: item.amount,
-    checked: checked
+    checked: checked,
+    isAdvance: item.isAdvance || false
   });
   
   render();
+}
+
+function onToggleAdvance(id) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  
+  if (item.checked) {
+    showToast('ابتدا تیک آیتم را بردارید تا بتوانید منبع آن را تغییر دهید');
+    return;
+  }
+  
+  item.isAdvance = !item.isAdvance;
+  
+  trackChange('advance', {
+    id: item.id,
+    name: item.name,
+    isAdvance: item.isAdvance
+  });
+  
+  render();
+  showToast(`آیتم "${item.name}" ${item.isAdvance ? 'از دادگی' : 'از کل'} پرداخت می‌شود`);
+}
+
+function onToggleImportant(id) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  
+  item.important = !item.important;
+  
+  trackChange('important', {
+    id: item.id,
+    name: item.name,
+    important: item.important
+  });
+  
+  render();
+  showToast(item.important ? '⭐ مهم شد' : '🔹 عادی شد');
+}
+
+function onToggleRepeat(id) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  
+  item.repeat = !item.repeat;
+  
+  // ذخیره در لیست آیتم‌های تکراری
+  const repeatItems = loadRepeatItems();
+  if (item.repeat) {
+    repeatItems.push({ name: item.name, amount: item.amount });
+  } else {
+    const index = repeatItems.findIndex(r => r.name === item.name && r.amount === item.amount);
+    if (index > -1) repeatItems.splice(index, 1);
+  }
+  saveRepeatItems(repeatItems);
+  
+  render();
+  showToast(item.repeat ? '🔄 به لیست تکراری‌ها اضافه شد' : 'از لیست تکراری‌ها حذف شد');
 }
 
 function onDeleteItem(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
   
-  // ثبت تغییر
   trackChange('delete', {
     id: item.id,
     name: item.name,
@@ -794,6 +1246,7 @@ function onDeleteItem(id) {
   
   state.items = state.items.filter(i => i.id !== id);
   render();
+  showToast(`آیتم "${item.name}" حذف شد`);
 }
 
 function onAddItem() {
@@ -810,24 +1263,70 @@ function onAddItem() {
     id: Date.now().toString(),
     name,
     amount: Number(amount),
-    checked: false
+    checked: false,
+    isAdvance: false,
+    important: false,
+    repeat: false
   };
 
-  // ثبت تغییر
   trackChange('add', {
     id: newItem.id,
     name: newItem.name,
-    amount: newItem.amount
+    amount: newItem.amount,
+    important: newItem.important
   });
 
   state.items.push(newItem);
   nameInput.value = '';
   amountInput.value = '';
   render();
-  showToast('آیتم اضافه شد');
+  showToast(`آیتم "${name}" اضافه شد`);
+}
+
+function openEditModal(id) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+  
+  editItemId = id;
+  document.getElementById('editName').value = item.name;
+  document.getElementById('editAmount').value = item.amount;
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function saveEdit() {
+  if (!editItemId) return;
+  
+  const item = state.items.find(i => i.id === editItemId);
+  if (!item) return;
+  
+  const newName = document.getElementById('editName').value.trim();
+  const newAmount = document.getElementById('editAmount').value.trim();
+  
+  if (!newName || !newAmount) {
+    showToast('لطفاً نام و مبلغ را وارد کنید');
+    return;
+  }
+  
+  trackChange('edit', {
+    id: item.id,
+    name: newName,
+    amount: Number(newAmount)
+  });
+  
+  item.name = newName;
+  item.amount = Number(newAmount);
+  
+  document.getElementById('editModal').classList.add('hidden');
+  render();
+  showToast('آیتم ویرایش شد');
 }
 
 function switchToMonth(key) {
+  if (pendingChanges.items.length > 0) {
+    showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
+    return;
+  }
+  
   currentMonthKey = key;
   state = loadMonth(key);
   saveCurrentPointer(key);
@@ -835,26 +1334,45 @@ function switchToMonth(key) {
 }
 
 function shiftMonth(delta) {
+  if (pendingChanges.items.length > 0) {
+    showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
+    return;
+  }
+  
   const [y, m] = currentMonthKey.split('-').map(Number);
   const d = new Date(y, m - 1 + delta, 1);
   switchToMonth(monthKey(d));
 }
 
 function startNewMonth() {
-  // بررسی تغییرات ثبت نشده
   if (pendingChanges.items.length > 0) {
-    showToast('ابتدا تغییرات را ثبت نهایی کنید!');
+    showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
     return;
   }
 
-  const { spent, salary, advance, remaining, finalLeft } = calcTotals();
+  // اضافه کردن آیتم‌های تکراری به ماه جدید
+  const repeatItems = loadRepeatItems();
+  repeatItems.forEach(item => {
+    state.items.push({
+      id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 4),
+      name: item.name,
+      amount: Number(item.amount),
+      checked: false,
+      isAdvance: false,
+      important: false,
+      repeat: true
+    });
+  });
+
+  const { spentFromSalary, spentFromAdvance, salary, advance, remainingAdvance, remainingSalary } = calcTotals();
   const summary =
     `📅 *خلاصه ماه ${monthLabel(currentMonthKey)}*\n\n` +
     `💰 کل: ${toFa(salary)} ریال\n` +
     `📤 دادگی: ${toFa(advance)} ریال\n` +
-    `💸 خرج شده: ${toFa(spent)} ریال\n` +
-    `📈 باقی‌مانده: ${toFa(remaining)} ریال\n` +
-    `🎯 مانده نهایی: ${toFa(finalLeft)} ریال`;
+    `💸 خرج از کل: ${toFa(spentFromSalary)} ریال\n` +
+    `🔶 خرج از دادگی: ${toFa(spentFromAdvance)} ریال\n` +
+    `📈 دادگی باقی‌مانده: ${toFa(remainingAdvance)} ریال\n` +
+    `🎯 مانده نهایی: ${toFa(remainingSalary)} ریال`;
   sendTelegramMessage(summary);
 
   state.closed = true;
@@ -870,6 +1388,9 @@ function startNewMonth() {
   showToast('ماه جدید شروع شد');
 }
 
+// =====================================================
+// History
+// =====================================================
 function renderHistory() {
   const list = document.getElementById('historyList');
   list.innerHTML = '';
@@ -882,7 +1403,12 @@ function renderHistory() {
 
   keys.forEach(key => {
     const data = loadMonth(key);
-    const spent = data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const spentFromSalary = data.items
+      .filter(i => i.checked && !i.isAdvance)
+      .reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const spentFromAdvance = data.items
+      .filter(i => i.checked && i.isAdvance)
+      .reduce((s, i) => s + (Number(i.amount) || 0), 0);
     const totalItems = data.items.length;
 
     const li = document.createElement('li');
@@ -894,7 +1420,7 @@ function renderHistory() {
 
     const right = document.createElement('span');
     right.className = 'h-info';
-    right.textContent = `${toFa(spent)} ریال خرج | ${totalItems} آیتم`;
+    right.textContent = `کل: ${toFa(spentFromSalary)} | دادگی: ${toFa(spentFromAdvance)} | ${totalItems} آیتم`;
 
     li.appendChild(left);
     li.appendChild(right);
@@ -906,7 +1432,143 @@ function renderHistory() {
   });
 }
 
-// ---------- Wiring ----------
+// =====================================================
+// Charts
+// =====================================================
+function renderCharts() {
+  const stats = document.getElementById('chartStats');
+  const container = document.getElementById('chartContainer');
+  
+  const allKeys = listAllMonthKeys().slice(0, 6);
+  const currentData = calcTotals();
+  
+  // آمار سریع
+  stats.innerHTML = `
+    <div class="stat-item">
+      <span class="stat-value">${toFa(currentData.totalSpent)}</span>
+      <span class="stat-label">جمع کل خرج</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">${toFa(currentData.remainingSalary)}</span>
+      <span class="stat-label">باقی‌مانده نهایی</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">${state.items.length}</span>
+      <span class="stat-label">تعداد آیتم‌ها</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">${toFa(currentData.advance)}</span>
+      <span class="stat-label">دادگی کل</span>
+    </div>
+  `;
+  
+  // نمودار مقایسه ماه‌ها
+  let chartHTML = '<div style="margin-top:16px;"><div style="font-size:14px;color:#888;margin-bottom:8px;">مقایسه خرج ماه‌های اخیر:</div>';
+  
+  const maxSpent = Math.max(...allKeys.map(k => {
+    const data = loadMonth(k);
+    return data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+  }), 1);
+  
+  allKeys.slice(0, 6).forEach(key => {
+    const data = loadMonth(key);
+    const spent = data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const percentage = Math.max((spent / maxSpent) * 100, 5);
+    
+    chartHTML += `
+      <div class="chart-bar">
+        <span class="label">${monthLabel(key)}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${percentage}%;"></div>
+        </div>
+        <span class="bar-value">${toFa(spent)}</span>
+      </div>
+    `;
+  });
+  
+  chartHTML += '</div>';
+  container.innerHTML = chartHTML;
+}
+
+// =====================================================
+// Backup
+// =====================================================
+function exportBackup() {
+  const data = {
+    version: '1.0',
+    exportDate: new Date().toISOString(),
+    months: {},
+    settings: getTelegramSettings(),
+    repeatItems: loadRepeatItems()
+  };
+  
+  const keys = listAllMonthKeys();
+  keys.forEach(key => {
+    data.months[key] = loadMonth(key);
+  });
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `budget_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  document.getElementById('backupStatus').textContent = '✅ خروجی گرفته شد';
+}
+
+function importBackup(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      if (!data.months || typeof data.months !== 'object') {
+        throw new Error('فرمت فایل نامعتبر است');
+      }
+      
+      // بازیابی ماه‌ها
+      Object.keys(data.months).forEach(key => {
+        saveMonth(key, data.months[key]);
+      });
+      
+      // بازیابی تنظیمات
+      if (data.settings) {
+        saveTelegramSettings(data.settings.token || '', data.settings.chatId || '');
+      }
+      
+      // بازیابی آیتم‌های تکراری
+      if (data.repeatItems) {
+        saveRepeatItems(data.repeatItems);
+      }
+      
+      // بارگذاری مجدد
+      switchToMonth(currentMonthKey);
+      document.getElementById('backupStatus').textContent = '✅ بازیابی با موفقیت انجام شد';
+      showToast('✅ اطلاعات با موفقیت بازیابی شد');
+    } catch (err) {
+      document.getElementById('backupStatus').textContent = '❌ خطا: ' + err.message;
+      showToast('❌ خطا در بازیابی: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// =====================================================
+// PWA - Service Worker
+// =====================================================
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    // برای PWA ساده، فقط manifest و meta tags کافی است
+    // این تابع برای پشتیبانی بیشتر در نظر گرفته شده
+    console.log('PWA ready');
+  }
+}
+
+// =====================================================
+// Wiring
+// =====================================================
 document.getElementById('addItemBtn').addEventListener('click', onAddItem);
 document.getElementById('newItemAmount').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') onAddItem();
@@ -924,6 +1586,7 @@ document.getElementById('advanceTaken').addEventListener('input', (e) => {
 document.getElementById('prevMonthBtn').addEventListener('click', () => shiftMonth(-1));
 document.getElementById('nextMonthBtn').addEventListener('click', () => shiftMonth(1));
 
+// History
 document.getElementById('historyBtn').addEventListener('click', () => {
   renderHistory();
   document.getElementById('historyModal').classList.remove('hidden');
@@ -932,8 +1595,35 @@ document.getElementById('closeHistoryBtn').addEventListener('click', () => {
   document.getElementById('historyModal').classList.add('hidden');
 });
 
+// Charts
+document.getElementById('chartBtn').addEventListener('click', () => {
+  renderCharts();
+  document.getElementById('chartModal').classList.remove('hidden');
+});
+document.getElementById('closeChartBtn').addEventListener('click', () => {
+  document.getElementById('chartModal').classList.add('hidden');
+});
+
+// Backup
+document.getElementById('backupBtn').addEventListener('click', () => {
+  document.getElementById('backupStatus').textContent = '';
+  document.getElementById('backupModal').classList.remove('hidden');
+});
+document.getElementById('closeBackupBtn').addEventListener('click', () => {
+  document.getElementById('backupModal').classList.add('hidden');
+});
+document.getElementById('exportBtn').addEventListener('click', exportBackup);
+document.getElementById('importFile').addEventListener('change', (e) => {
+  if (e.target.files.length > 0) {
+    importBackup(e.target.files[0]);
+  }
+  e.target.value = '';
+});
+
+// Submit
 document.getElementById('submitFinalBtn').addEventListener('click', submitFinal);
 
+// New Month
 document.getElementById('newMonthBtn').addEventListener('click', () => {
   if (pendingChanges.items.length > 0) {
     showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
@@ -952,10 +1642,13 @@ document.getElementById('confirmNo').addEventListener('click', () => {
   document.getElementById('confirmModal').classList.add('hidden');
 });
 
+// Settings
 document.getElementById('settingsBtn').addEventListener('click', () => {
   const { token, chatId } = getTelegramSettings();
+  const repeatItems = loadRepeatItems();
   document.getElementById('botToken').value = token;
   document.getElementById('chatId').value = chatId;
+  document.getElementById('repeatItems').value = repeatItems.map(i => `${i.name},${i.amount}`).join('\n');
   document.getElementById('settingsStatus').textContent = '';
   document.getElementById('settingsModal').classList.remove('hidden');
 });
@@ -965,17 +1658,40 @@ document.getElementById('closeSettingsBtn').addEventListener('click', () => {
 document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   const token = document.getElementById('botToken').value.trim();
   const chatId = document.getElementById('chatId').value.trim();
+  const repeatText = document.getElementById('repeatItems').value.trim();
+  
   saveTelegramSettings(token, chatId);
-  document.getElementById('settingsStatus').textContent = 'ذخیره شد ✓';
-  showToast('تنظیمات تلگرام ذخیره شد');
+  
+  // ذخیره آیتم‌های تکراری
+  const repeatItems = repeatText.split('\n')
+    .filter(line => line.trim())
+    .map(line => {
+      const [name, amount] = line.split(',').map(s => s.trim());
+      return { name, amount: Number(amount) || 0 };
+    })
+    .filter(item => item.name && item.amount > 0);
+  saveRepeatItems(repeatItems);
+  
+  document.getElementById('settingsStatus').textContent = '✅ ذخیره شد';
+  showToast('تنظیمات ذخیره شد');
 });
 
-// ---------- Init ----------
+// Edit
+document.getElementById('closeEditBtn').addEventListener('click', () => {
+  document.getElementById('editModal').classList.add('hidden');
+});
+document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+document.getElementById('editAmount').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') saveEdit();
+});
+
+// =====================================================
+// Init
+// =====================================================
 render();
-
-// نمایش تعداد تغییرات ثبت نشده در کنسول (اختیاری)
+registerSW();
 console.log('تغییرات ثبت نشده:', pendingChanges.items.length);
-
+console.log('آیتم‌های تکراری:', loadRepeatItems().length);
 </script>
 </body>
 </html>
