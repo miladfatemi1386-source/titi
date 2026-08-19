@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>حساب کتابی</title>
+<title>یه حساب کتابی</title>
 
 <!-- ===================================================== -->
 <!-- فونت‌های زیبا -->
@@ -804,7 +804,7 @@ body {
 }
 
 .modal-box.small {
-  max-width: 320px;
+  max-width: 350px;
   text-align: center;
 }
 
@@ -1038,7 +1038,7 @@ body {
 }
 
 /* ===================================================== */
-/* دیالوگ تعیین مبلغ از دادگی */
+/* دیالوگ تعیین مبلغ از دادگی و کل - نسخه جدید */
 /* ===================================================== */
 .advance-input-group {
   display: flex;
@@ -1087,6 +1087,10 @@ body {
   transform: scale(1.1);
 }
 
+.advance-input-group input[type="range"].salary-slider::-webkit-slider-thumb {
+  background: var(--accent-blue);
+}
+
 .advance-input-group input[type="number"] {
   background: var(--bg-primary);
   border: none;
@@ -1103,6 +1107,55 @@ body {
 .advance-input-group input[type="number"]:focus {
   outline: none;
   transform: scale(1.02);
+}
+
+/* دکمه‌های سریع در دیالوگ */
+.advance-quick-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.advance-quick-buttons button {
+  flex: 1;
+  background: var(--bg-primary);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--nm-flat-sm);
+  transition: all 0.3s var(--bounce-ease);
+  font-family: var(--font-main);
+  min-width: 60px;
+}
+
+.advance-quick-buttons button:active {
+  transform: scale(0.94);
+  box-shadow: var(--nm-pressed-sm);
+}
+
+.advance-quick-buttons .btn-full-salary {
+  color: var(--accent-blue);
+}
+.advance-quick-buttons .btn-full-advance {
+  color: var(--accent-orange);
+}
+.advance-quick-buttons .btn-half {
+  color: var(--accent-purple);
+}
+.advance-quick-buttons .btn-remaining {
+  color: var(--accent-green);
+}
+
+/* جداکننده بین دو بخش */
+.divider {
+  border: none;
+  height: 1px;
+  background: var(--border-light);
+  margin: 8px 0;
 }
 
 /* ===================================================== */
@@ -1128,6 +1181,11 @@ body {
   .item-detail {
     font-size: 11px;
     min-width: 50px;
+  }
+  .advance-quick-buttons button {
+    font-size: 11px;
+    padding: 6px 2px;
+    min-width: 45px;
   }
 }
 
@@ -1322,29 +1380,52 @@ body {
 </div>
 
 <!-- ===================================================== -->
-<!-- دیالوگ تعیین مبلغ از دادگی -->
+<!-- دیالوگ جدید: تنظیم مبلغ از دادگی و کل به صورت مجزا -->
 <!-- ===================================================== -->
 <div id="advanceModal" class="modal hidden">
   <div class="modal-box small">
     <div class="modal-header">
-      <span>🔶 تعیین مبلغ از دادگی</span>
+      <span>🔶 تعیین مبلغ پرداختی</span>
       <button id="closeAdvanceBtn" class="icon-btn">×</button>
     </div>
     <div class="modal-body">
       <p style="font-size:15px;margin-bottom:12px;color:var(--text-secondary);" id="advanceItemName">نام آیتم</p>
+      
       <div class="advance-input-group">
-        <label>مبلغی که از دادگی پرداخت می‌شود:</label>
-        <input type="range" id="advanceSlider" min="0" max="100" value="0">
+        <label>🔶 مبلغ از دادگی:</label>
+        <input type="range" id="advanceSlider" min="0" max="100" value="0" class="advance-slider">
         <div class="range-info">
           <span>۰</span>
           <span id="advanceMaxLabel">۱۰۰</span>
         </div>
         <input type="number" id="advanceInput" value="0" min="0">
-        <div style="font-size:13px;color:var(--text-dim);margin-top:4px;">
-          باقی‌مانده از کل پرداخت می‌شود: <span id="advanceRemainingLabel">۰</span>
-        </div>
-        <button id="advanceConfirmBtn" class="add-btn" style="margin-top:8px;">تأیید</button>
       </div>
+
+      <hr class="divider">
+
+      <div class="advance-input-group">
+        <label>🔷 مبلغ از کل:</label>
+        <input type="range" id="salarySlider" min="0" max="100" value="0" class="salary-slider">
+        <div class="range-info">
+          <span>۰</span>
+          <span id="salaryMaxLabel">۱۰۰</span>
+        </div>
+        <input type="number" id="salaryInput" value="0" min="0">
+      </div>
+
+      <div style="font-size:13px;color:var(--text-dim);margin:8px 0;text-align:center;">
+        مجموع: <span id="totalPaidLabel">۰</span> از <span id="totalAmountLabel">۰</span>
+      </div>
+        
+      <!-- دکمه‌های سریع -->
+      <div class="advance-quick-buttons">
+        <button class="btn-full-salary" id="quickFullSalary">✅ کل از کل</button>
+        <button class="btn-half" id="quickHalf">🔀 نصف</button>
+        <button class="btn-full-advance" id="quickFullAdvance">🔶 کل از دادگی</button>
+        <button class="btn-remaining" id="quickRemaining">🔁 باقی‌مانده</button>
+      </div>
+
+      <button id="advanceConfirmBtn" class="add-btn" style="margin-top:8px;">تأیید</button>
     </div>
   </div>
 </div>
@@ -1397,13 +1478,6 @@ function toPersianDate(date) {
   return `${j.day} ${monthNames[j.month - 1]} ${j.year}`;
 }
 
-function monthKeyToJalali(key) {
-  const [y, m] = key.split('-').map(Number);
-  const j = gregorianToJalali(y, m, 1);
-  const monthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
-  return `${monthNames[j.month - 1]} ${j.year}`;
-}
-
 // =====================================================
 // Helpers
 // =====================================================
@@ -1416,19 +1490,13 @@ const monthKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).
 
 const monthLabel = (key) => {
   if (!key) return 'نامشخص';
-  
   try {
     const [y, m] = key.split('-').map(Number);
-    
-    if (isNaN(y) || isNaN(m) || m < 1 || m > 12) {
-      return 'نامشخص';
-    }
-    
+    if (isNaN(y) || isNaN(m) || m < 1 || m > 12) return 'نامشخص';
     const j = gregorianToJalali(y, m, 1);
     const monthNames = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
     return `${monthNames[j.month - 1]} ${j.year}`;
   } catch (e) {
-    console.error('Error in monthLabel:', e);
     return 'نامشخص';
   }
 };
@@ -1472,7 +1540,7 @@ let currentMonthKey = localStorage.getItem(CURRENT_KEY) || monthKey(new Date());
 let state = loadMonth(currentMonthKey);
 let pendingChanges = loadPendingChanges();
 let editItemId = null;
-let advanceItemId = null; // برای دیالوگ دادگی
+let advanceItemId = null;
 
 function defaultState() {
   return {
@@ -1579,10 +1647,7 @@ function showToast(message, duration = 3000) {
 // Calculations
 // =====================================================
 function calcTotals() {
-  // مجموع پرداختی از کل (salaryPaid)
   const spentFromSalary = state.items.reduce((sum, i) => sum + (Number(i.salaryPaid) || 0), 0);
-  
-  // مجموع پرداختی از دادگی (advancePaid)
   const spentFromAdvance = state.items.reduce((sum, i) => sum + (Number(i.advancePaid) || 0), 0);
   
   const salary = Number(state.totalSalary) || 0;
@@ -1617,7 +1682,7 @@ function trackChange(type, data) {
 }
 
 // =====================================================
-// Submit Final - بدون تاریخ در بخش تغییرات
+// Submit Final
 // =====================================================
 async function submitFinal() {
   if (pendingChanges.items.length === 0) {
@@ -1631,7 +1696,7 @@ async function submitFinal() {
   pendingChanges.items.forEach((change, index) => {
     let desc = '';
     if (change.type === 'partial_payment') {
-      desc = `🔶 تغییر پرداخت از دادگی: ${change.data.name} (${toFa(change.data.advancePaid)} از ${toFa(change.data.total)} از دادگی، ${toFa(change.data.salaryPaid)} از کل)`;
+      desc = `🔶 تغییر پرداخت: ${change.data.name} (${toFa(change.data.advancePaid)} از دادگی، ${toFa(change.data.salaryPaid)} از کل)`;
     } else if (change.type === 'add') {
       const star = change.data.important ? ' ⭐' : '';
       desc = `➕ افزوده شد${star}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
@@ -1686,7 +1751,6 @@ function render() {
   list.innerHTML = '';
   
   state.items.forEach(item => {
-    // محاسبه وضعیت پرداخت کامل
     const totalAmount = Number(item.amount) || 0;
     const advancePaid = Number(item.advancePaid) || 0;
     const salaryPaid = Number(item.salaryPaid) || 0;
@@ -1697,7 +1761,6 @@ function render() {
       (isPaid ? ' paid' : '') + 
       (item.important ? ' important' : '');
 
-    // نمایش جزئیات پرداخت
     const detailSpan = document.createElement('span');
     detailSpan.className = 'item-detail';
     detailSpan.innerHTML = `
@@ -1720,7 +1783,7 @@ function render() {
     const advanceBtn = document.createElement('button');
     advanceBtn.className = 'advance-btn';
     advanceBtn.textContent = 'دادگی';
-    advanceBtn.title = 'تعیین مبلغ از دادگی';
+    advanceBtn.title = 'تعیین مبلغ از دادگی و کل';
     advanceBtn.addEventListener('click', () => openAdvanceModal(item.id));
 
     const importantBtn = document.createElement('button');
@@ -1788,7 +1851,7 @@ function render() {
 // Event Handlers
 // =====================================================
 
-// دیالوگ دادگی
+// دیالوگ جدید با دو اسلایدر
 function openAdvanceModal(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
@@ -1796,71 +1859,142 @@ function openAdvanceModal(id) {
   advanceItemId = id;
   const total = Number(item.amount) || 0;
   const currentAdvance = Number(item.advancePaid) || 0;
+  const currentSalary = Number(item.salaryPaid) || 0;
   
   document.getElementById('advanceItemName').textContent = `💰 ${item.name} (${toFa(total)} ریال)`;
-  document.getElementById('advanceSlider').max = total;
-  document.getElementById('advanceSlider').value = currentAdvance;
-  document.getElementById('advanceInput').value = currentAdvance;
+  
+  // تنظیم اسلایدرها
+  const advanceSlider = document.getElementById('advanceSlider');
+  const advanceInput = document.getElementById('advanceInput');
+  const salarySlider = document.getElementById('salarySlider');
+  const salaryInput = document.getElementById('salaryInput');
+  
+  advanceSlider.max = total;
+  advanceSlider.value = currentAdvance;
+  advanceInput.value = currentAdvance;
   document.getElementById('advanceMaxLabel').textContent = toFa(total);
-  document.getElementById('advanceRemainingLabel').textContent = toFa(total - currentAdvance);
+  
+  salarySlider.max = total;
+  salarySlider.value = currentSalary;
+  salaryInput.value = currentSalary;
+  document.getElementById('salaryMaxLabel').textContent = toFa(total);
+  
+  updateTotalPaid();
   
   document.getElementById('advanceModal').classList.remove('hidden');
   
-  // اتصال رویدادها
-  const slider = document.getElementById('advanceSlider');
-  const input = document.getElementById('advanceInput');
-  const remainingLabel = document.getElementById('advanceRemainingLabel');
+  function updateTotalPaid() {
+    const adv = Number(advanceInput.value) || 0;
+    const sal = Number(salaryInput.value) || 0;
+    const totalAmount = Number(total);
+    const sum = Math.min(adv + sal, totalAmount);
+    document.getElementById('totalPaidLabel').textContent = toFa(sum);
+    document.getElementById('totalAmountLabel').textContent = toFa(totalAmount);
+  }
   
   function updateAdvance(value) {
     let val = Math.min(Math.max(0, Number(value) || 0), total);
-    slider.value = val;
-    input.value = val;
-    remainingLabel.textContent = toFa(total - val);
+    // اطمینان از اینکه مجموع از کل بیشتر نشه
+    const currentSalary = Number(salaryInput.value) || 0;
+    if (val + currentSalary > total) {
+      val = total - currentSalary;
+    }
+    advanceSlider.value = val;
+    advanceInput.value = val;
+    updateTotalPaid();
   }
   
-  slider.oninput = function() {
+  function updateSalary(value) {
+    let val = Math.min(Math.max(0, Number(value) || 0), total);
+    const currentAdvance = Number(advanceInput.value) || 0;
+    if (val + currentAdvance > total) {
+      val = total - currentAdvance;
+    }
+    salarySlider.value = val;
+    salaryInput.value = val;
+    updateTotalPaid();
+  }
+  
+  advanceSlider.oninput = function() {
     updateAdvance(this.value);
   };
   
-  input.oninput = function() {
-    let val = Math.min(Math.max(0, Number(this.value) || 0), total);
-    updateAdvance(val);
+  advanceInput.oninput = function() {
+    updateAdvance(this.value);
+  };
+  
+  salarySlider.oninput = function() {
+    updateSalary(this.value);
+  };
+  
+  salaryInput.oninput = function() {
+    updateSalary(this.value);
+  };
+  
+  // دکمه‌های سریع
+  document.getElementById('quickFullSalary').onclick = function() {
+    updateAdvance(0);
+    updateSalary(total);
+  };
+  
+  document.getElementById('quickFullAdvance').onclick = function() {
+    updateAdvance(total);
+    updateSalary(0);
+  };
+  
+  document.getElementById('quickHalf').onclick = function() {
+    const half = Math.floor(total / 2);
+    updateAdvance(half);
+    updateSalary(total - half);
+  };
+  
+  document.getElementById('quickRemaining').onclick = function() {
+    const currentAdv = Number(advanceInput.value) || 0;
+    const remaining = total - currentAdv;
+    updateSalary(remaining);
   };
   
   // دکمه تأیید
   document.getElementById('advanceConfirmBtn').onclick = function() {
-    const newAdvance = Math.min(Math.max(0, Number(input.value) || 0), total);
-    const newSalary = total - newAdvance;
+    const newAdvance = Math.min(Math.max(0, Number(advanceInput.value) || 0), total);
+    const newSalary = Math.min(Math.max(0, Number(salaryInput.value) || 0), total);
+    // اطمینان از مجموع
+    let finalAdvance = newAdvance;
+    let finalSalary = newSalary;
+    if (finalAdvance + finalSalary > total) {
+      // اگر مجموع از کل بیشتر شد، اولویت با مبلغ دادگی هست
+      finalAdvance = Math.min(finalAdvance, total);
+      finalSalary = total - finalAdvance;
+    }
     
-    if (newAdvance === currentAdvance) {
+    if (finalAdvance === currentAdvance && finalSalary === currentSalary) {
       showToast('مقدار تغییر نکرد');
       document.getElementById('advanceModal').classList.add('hidden');
       return;
     }
     
-    item.advancePaid = newAdvance;
-    item.salaryPaid = newSalary;
+    item.advancePaid = finalAdvance;
+    item.salaryPaid = finalSalary;
     
     trackChange('partial_payment', {
       id: item.id,
       name: item.name,
       total: total,
-      advancePaid: newAdvance,
-      salaryPaid: newSalary
+      advancePaid: finalAdvance,
+      salaryPaid: finalSalary
     });
     
     document.getElementById('advanceModal').classList.add('hidden');
     render();
-    showToast(`💰 ${item.name}: ${toFa(newAdvance)} از دادگی، ${toFa(newSalary)} از کل`);
+    showToast(`💰 ${item.name}: ${toFa(finalAdvance)} از دادگی، ${toFa(finalSalary)} از کل`);
   };
 }
 
-// بستن دیالوگ دادگی
+// بستن دیالوگ
 document.getElementById('closeAdvanceBtn').addEventListener('click', () => {
   document.getElementById('advanceModal').classList.add('hidden');
 });
 
-// کلیک بیرون مودال برای بستن
 document.getElementById('advanceModal').addEventListener('click', (e) => {
   if (e.target === e.currentTarget) {
     document.getElementById('advanceModal').classList.add('hidden');
@@ -1870,15 +2004,8 @@ document.getElementById('advanceModal').addEventListener('click', (e) => {
 function onToggleImportant(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
-  
   item.important = !item.important;
-  
-  trackChange('important', {
-    id: item.id,
-    name: item.name,
-    important: item.important
-  });
-  
+  trackChange('important', { id: item.id, name: item.name, important: item.important });
   render();
   showToast(item.important ? '⭐ مهم شد' : '🔹 عادی شد');
 }
@@ -1886,9 +2013,7 @@ function onToggleImportant(id) {
 function onToggleRepeat(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
-  
   item.repeat = !item.repeat;
-  
   const repeatItems = loadRepeatItems();
   if (item.repeat) {
     repeatItems.push({ name: item.name, amount: item.amount });
@@ -1897,7 +2022,6 @@ function onToggleRepeat(id) {
     if (index > -1) repeatItems.splice(index, 1);
   }
   saveRepeatItems(repeatItems);
-  
   render();
   showToast(item.repeat ? '🔄 به لیست تکراری‌ها اضافه شد' : 'از لیست تکراری‌ها حذف شد');
 }
@@ -1905,8 +2029,6 @@ function onToggleRepeat(id) {
 function onDeleteItem(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
-  
-  // اضافه کردن کلاس removing برای انیمیشن حذف
   const items = document.querySelectorAll('.item-row');
   let targetEl = null;
   items.forEach(el => {
@@ -1914,27 +2036,16 @@ function onDeleteItem(id) {
       targetEl = el;
     }
   });
-  
   if (targetEl) {
     targetEl.className = 'item-row removing';
     setTimeout(() => {
-      trackChange('delete', {
-        id: item.id,
-        name: item.name,
-        amount: item.amount
-      });
-      
+      trackChange('delete', { id: item.id, name: item.name, amount: item.amount });
       state.items = state.items.filter(i => i.id !== id);
       render();
       showToast(`آیتم "${item.name}" حذف شد`);
     }, 350);
   } else {
-    trackChange('delete', {
-      id: item.id,
-      name: item.name,
-      amount: item.amount
-    });
-    
+    trackChange('delete', { id: item.id, name: item.name, amount: item.amount });
     state.items = state.items.filter(i => i.id !== id);
     render();
     showToast(`آیتم "${item.name}" حذف شد`);
@@ -1950,13 +2061,11 @@ function onAddItem() {
     showToast('لطفاً نام و مبلغ را وارد کنید');
     return;
   }
-
   const total = Number(amount);
   if (total <= 0) {
     showToast('مبلغ باید بزرگتر از صفر باشد');
     return;
   }
-
   const newItem = {
     id: Date.now().toString(),
     name,
@@ -1966,14 +2075,7 @@ function onAddItem() {
     important: false,
     repeat: false
   };
-
-  trackChange('add', {
-    id: newItem.id,
-    name: newItem.name,
-    amount: newItem.amount,
-    important: newItem.important
-  });
-
+  trackChange('add', { id: newItem.id, name: newItem.name, amount: newItem.amount, important: newItem.important });
   state.items.push(newItem);
   nameInput.value = '';
   amountInput.value = '';
@@ -1984,7 +2086,6 @@ function onAddItem() {
 function openEditModal(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
-  
   editItemId = id;
   document.getElementById('editName').value = item.name;
   document.getElementById('editAmount').value = item.amount;
@@ -1993,39 +2094,25 @@ function openEditModal(id) {
 
 function saveEdit() {
   if (!editItemId) return;
-  
   const item = state.items.find(i => i.id === editItemId);
   if (!item) return;
-  
   const newName = document.getElementById('editName').value.trim();
   const newAmount = document.getElementById('editAmount').value.trim();
-  
   if (!newName || !newAmount) {
     showToast('لطفاً نام و مبلغ را وارد کنید');
     return;
   }
-  
   const total = Number(newAmount);
   if (total <= 0) {
     showToast('مبلغ باید بزرگتر از صفر باشد');
     return;
   }
-  
-  // اگر مبلغ تغییر کرد، پرداخت‌ها رو ریست کن (چون دیگه منطقی نیست)
   const oldTotal = Number(item.amount) || 0;
-  trackChange('edit', {
-    id: item.id,
-    name: newName,
-    amount: total,
-    oldAmount: oldTotal
-  });
-  
+  trackChange('edit', { id: item.id, name: newName, amount: total, oldAmount: oldTotal });
   item.name = newName;
   item.amount = total;
-  // در صورت تغییر مبلغ، پرداخت‌های قبلی رو نگه دار اما اگر از مبلغ جدید بیشتر شد، اصلاح کن
   if (item.advancePaid > total) item.advancePaid = total;
   if (item.salaryPaid > total - item.advancePaid) item.salaryPaid = total - item.advancePaid;
-  
   document.getElementById('editModal').classList.add('hidden');
   render();
   showToast('آیتم ویرایش شد');
@@ -2036,7 +2123,6 @@ function switchToMonth(key) {
     showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
     return;
   }
-  
   currentMonthKey = key;
   state = loadMonth(key);
   saveCurrentPointer(key);
@@ -2048,14 +2134,11 @@ function shiftMonth(delta) {
     showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
     return;
   }
-  
   const [y, m] = currentMonthKey.split('-').map(Number);
   const d = new Date(y, m - 1 + delta, 1);
   const newKey = monthKey(d);
-  
   const title = document.getElementById('monthTitle');
   title.className = 'month-title ' + (delta > 0 ? 'slide-left' : 'slide-right');
-  
   setTimeout(() => {
     switchToMonth(newKey);
     title.className = 'month-title';
@@ -2067,7 +2150,6 @@ function startNewMonth() {
     showToast('ابتدا تغییرات را با دکمه "ثبت نهایی" ارسال کنید!');
     return;
   }
-
   const repeatItems = loadRepeatItems();
   repeatItems.forEach(item => {
     state.items.push({
@@ -2080,11 +2162,8 @@ function startNewMonth() {
       repeat: true
     });
   });
-
   const { spentFromSalary, spentFromAdvance, salary, advance, remainingAdvance, remainingSalary } = calcTotals();
-  
   const currentMonthName = monthLabel(currentMonthKey);
-  
   const summary =
     `📅 *خلاصه ماه ${currentMonthName}*\n\n` +
     `💰 کل: ${toFa(salary)} ریال\n` +
@@ -2094,10 +2173,8 @@ function startNewMonth() {
     `📈 دادگی باقی‌مانده: ${toFa(remainingAdvance)} ریال\n` +
     `🎯 مانده نهایی: ${toFa(remainingSalary)} ریال`;
   sendTelegramMessage(summary);
-
   state.closed = true;
   saveMonth(currentMonthKey, state);
-
   const [y, m] = currentMonthKey.split('-').map(Number);
   const nextDate = new Date(y, m, 1);
   const nextKey = monthKey(nextDate);
@@ -2115,29 +2192,23 @@ function renderHistory() {
   const list = document.getElementById('historyList');
   list.innerHTML = '';
   const keys = listAllMonthKeys();
-
   if (keys.length === 0) {
     list.innerHTML = '<li class="history-item"><span class="h-info">هنوز ماهی ثبت نشده</span></li>';
     return;
   }
-
   keys.forEach(key => {
     const data = loadMonth(key);
     const spentFromSalary = data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0), 0);
     const spentFromAdvance = data.items.reduce((s, i) => s + (Number(i.advancePaid) || 0), 0);
     const totalItems = data.items.length;
-
     const li = document.createElement('li');
     li.className = 'history-item';
-
     const left = document.createElement('span');
     left.className = 'h-date';
     left.textContent = monthLabel(key);
-
     const right = document.createElement('span');
     right.className = 'h-info';
     right.textContent = `کل: ${toFa(spentFromSalary)} | دادگی: ${toFa(spentFromAdvance)} | ${totalItems} آیتم`;
-
     li.appendChild(left);
     li.appendChild(right);
     li.addEventListener('click', () => {
@@ -2154,10 +2225,8 @@ function renderHistory() {
 function renderCharts() {
   const stats = document.getElementById('chartStats');
   const container = document.getElementById('chartContainer');
-  
   const allKeys = listAllMonthKeys().slice(0, 6);
   const currentData = calcTotals();
-  
   stats.innerHTML = `
     <div class="stat-item">
       <span class="stat-value">${toFa(currentData.totalSpent)}</span>
@@ -2176,19 +2245,15 @@ function renderCharts() {
       <span class="stat-label">دادگی کل</span>
     </div>
   `;
-  
   let chartHTML = '<div style="margin-top:16px;"><div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">مقایسه خرج ماه‌های اخیر:</div>';
-  
   const maxSpent = Math.max(...allKeys.map(k => {
     const data = loadMonth(k);
     return data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0) + (Number(i.advancePaid) || 0), 0);
   }), 1);
-  
   allKeys.slice(0, 6).forEach(key => {
     const data = loadMonth(key);
     const spent = data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0) + (Number(i.advancePaid) || 0), 0);
     const percentage = Math.max((spent / maxSpent) * 100, 5);
-    
     chartHTML += `
       <div class="chart-bar">
         <span class="label">${monthLabel(key)}</span>
@@ -2199,7 +2264,6 @@ function renderCharts() {
       </div>
     `;
   });
-  
   chartHTML += '</div>';
   container.innerHTML = chartHTML;
 }
@@ -2215,12 +2279,10 @@ function exportBackup() {
     settings: getTelegramSettings(),
     repeatItems: loadRepeatItems()
   };
-  
   const keys = listAllMonthKeys();
   keys.forEach(key => {
     data.months[key] = loadMonth(key);
   });
-  
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2228,7 +2290,6 @@ function exportBackup() {
   a.download = `budget_backup_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
-  
   document.getElementById('backupStatus').textContent = '✅ خروجی گرفته شد';
 }
 
@@ -2237,17 +2298,13 @@ function importBackup(file) {
   reader.onload = (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      
       if (!data.months || typeof data.months !== 'object') {
         throw new Error('فرمت فایل نامعتبر است');
       }
-      
       Object.keys(data.months).forEach(key => {
-        // برای سازگاری با نسخه قبلی، آیتم‌های قدیمی رو به ساختار جدید تبدیل کن
         const monthData = data.months[key];
         if (monthData.items) {
           monthData.items = monthData.items.map(item => {
-            // اگر advancePaid و salaryPaid وجود نداره، از isAdvance استفاده کن
             if (item.advancePaid === undefined && item.salaryPaid === undefined) {
               const total = Number(item.amount) || 0;
               if (item.isAdvance) {
@@ -2260,20 +2317,16 @@ function importBackup(file) {
             }
             return item;
           });
-          // حذف فیلدهای قدیمی
           monthData.items = monthData.items.map(({ isAdvance, checked, ...rest }) => rest);
         }
         saveMonth(key, monthData);
       });
-      
       if (data.settings) {
         saveTelegramSettings(data.settings.token || '', data.settings.chatId || '');
       }
-      
       if (data.repeatItems) {
         saveRepeatItems(data.repeatItems);
       }
-      
       switchToMonth(currentMonthKey);
       document.getElementById('backupStatus').textContent = '✅ بازیابی با موفقیت انجام شد';
       showToast('✅ اطلاعات با موفقیت بازیابی شد');
@@ -2298,7 +2351,6 @@ function registerSW() {
 // Wiring
 // =====================================================
 
-// Theme
 setTheme(getTheme());
 document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
@@ -2386,9 +2438,7 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   const token = document.getElementById('botToken').value.trim();
   const chatId = document.getElementById('chatId').value.trim();
   const repeatText = document.getElementById('repeatItems').value.trim();
-  
   saveTelegramSettings(token, chatId);
-  
   const repeatItems = repeatText.split('\n')
     .filter(line => line.trim())
     .map(line => {
@@ -2397,7 +2447,6 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
     })
     .filter(item => item.name && item.amount > 0);
   saveRepeatItems(repeatItems);
-  
   document.getElementById('settingsStatus').textContent = '✅ ذخیره شد';
   showToast('تنظیمات ذخیره شد');
 });
@@ -2410,7 +2459,6 @@ document.getElementById('editAmount').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') saveEdit();
 });
 
-// بستن مودال‌ها با کلیک بیرون
 document.querySelectorAll('.modal').forEach(modal => {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
@@ -2419,9 +2467,6 @@ document.querySelectorAll('.modal').forEach(modal => {
   });
 });
 
-// =====================================================
-// Init
-// =====================================================
 render();
 registerSW();
 console.log('تغییرات ثبت نشده:', pendingChanges.items.length);
