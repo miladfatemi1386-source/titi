@@ -27,7 +27,6 @@
 /* روتینگ و متغیرهای تم */
 /* ===================================================== */
 :root {
-  /* تم تاریک نئومورفیک */
   --bg-primary: #1e2128;
   --bg-secondary: #1e2128;
   --bg-card: #1e2128;
@@ -300,17 +299,19 @@ body {
   }
 }
 
-.item-row.checked .item-name,
-.item-row.checked .item-amount {
+/* آیتم کامل پرداخت شده */
+.item-row.paid .item-name,
+.item-row.paid .item-amount,
+.item-row.paid .item-detail {
   color: var(--text-dim);
   opacity: 0.7;
 }
 
-.item-row.checked .item-name {
+.item-row.paid .item-name {
   position: relative;
 }
 
-.item-row.checked .item-name::after {
+.item-row.paid .item-name::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -327,7 +328,7 @@ body {
   to { transform: scaleX(1); transform-origin: right; }
 }
 
-.item-row:not(.checked) .item-name::after {
+.item-row:not(.paid) .item-name::after {
   animation: unStrikeThrough 0.35s var(--smooth-ease) forwards;
 }
 
@@ -336,28 +337,27 @@ body {
   to { transform: scaleX(0); transform-origin: left; }
 }
 
-.item-row.advance .item-name,
-.item-row.advance .item-amount {
-  color: var(--accent-orange);
-}
-
 .item-row.important .item-name::before {
   content: "⭐ ";
   color: var(--accent-gold);
 }
 
-.item-checkbox {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  accent-color: var(--accent-blue);
-  cursor: pointer;
-  border-radius: 6px;
-  transition: transform 0.2s var(--bounce-ease);
+/* نمایش جزئیات پرداخت */
+.item-detail {
+  font-size: 13px;
+  color: var(--text-muted);
+  min-width: 60px;
+  text-align: left;
+  font-weight: 500;
+  transition: color 0.4s var(--smooth-ease), opacity 0.4s var(--smooth-ease);
+  direction: ltr;
 }
 
-.item-checkbox:active {
-  transform: scale(0.85);
+.item-detail .advance-part {
+  color: var(--accent-orange);
+}
+.item-detail .salary-part {
+  color: var(--accent-blue);
 }
 
 .item-name {
@@ -400,10 +400,6 @@ body {
   transition: all 0.3s var(--bounce-ease);
   font-family: var(--font-main);
   font-weight: 500;
-}
-
-.advance-btn.active {
-  box-shadow: var(--nm-pressed-sm);
 }
 
 .advance-btn:active {
@@ -713,7 +709,7 @@ body {
 
 .chart-bar .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-blue));
   border-radius: 10px;
   transition: width 0.8s var(--bounce-ease);
   transform-origin: right;
@@ -1042,6 +1038,74 @@ body {
 }
 
 /* ===================================================== */
+/* دیالوگ تعیین مبلغ از دادگی */
+/* ===================================================== */
+.advance-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.advance-input-group label {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.advance-input-group .range-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.advance-input-group input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--shadow-dark);
+  outline: none;
+  transition: background 0.2s;
+}
+
+.advance-input-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  cursor: pointer;
+  box-shadow: var(--nm-flat-sm);
+  transition: all 0.2s;
+}
+
+.advance-input-group input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.advance-input-group input[type="number"] {
+  background: var(--bg-primary);
+  border: none;
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 16px;
+  text-align: center;
+  font-family: var(--font-main);
+  box-shadow: var(--nm-pressed-sm);
+  transition: all 0.3s var(--smooth-ease);
+}
+
+.advance-input-group input[type="number"]:focus {
+  outline: none;
+  transform: scale(1.02);
+}
+
+/* ===================================================== */
 /* ریسپانسیو */
 /* ===================================================== */
 @media (max-width: 400px) {
@@ -1060,6 +1124,10 @@ body {
   }
   .month-title {
     font-size: 17px;
+  }
+  .item-detail {
+    font-size: 11px;
+    min-width: 50px;
   }
 }
 
@@ -1253,6 +1321,34 @@ body {
   </div>
 </div>
 
+<!-- ===================================================== -->
+<!-- دیالوگ تعیین مبلغ از دادگی -->
+<!-- ===================================================== -->
+<div id="advanceModal" class="modal hidden">
+  <div class="modal-box small">
+    <div class="modal-header">
+      <span>🔶 تعیین مبلغ از دادگی</span>
+      <button id="closeAdvanceBtn" class="icon-btn">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:15px;margin-bottom:12px;color:var(--text-secondary);" id="advanceItemName">نام آیتم</p>
+      <div class="advance-input-group">
+        <label>مبلغی که از دادگی پرداخت می‌شود:</label>
+        <input type="range" id="advanceSlider" min="0" max="100" value="0">
+        <div class="range-info">
+          <span>۰</span>
+          <span id="advanceMaxLabel">۱۰۰</span>
+        </div>
+        <input type="number" id="advanceInput" value="0" min="0">
+        <div style="font-size:13px;color:var(--text-dim);margin-top:4px;">
+          باقی‌مانده از کل پرداخت می‌شود: <span id="advanceRemainingLabel">۰</span>
+        </div>
+        <button id="advanceConfirmBtn" class="add-btn" style="margin-top:8px;">تأیید</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // =====================================================
 // کتابخانه تبدیل تاریخ شمسی
@@ -1376,6 +1472,7 @@ let currentMonthKey = localStorage.getItem(CURRENT_KEY) || monthKey(new Date());
 let state = loadMonth(currentMonthKey);
 let pendingChanges = loadPendingChanges();
 let editItemId = null;
+let advanceItemId = null; // برای دیالوگ دادگی
 
 function defaultState() {
   return {
@@ -1482,13 +1579,11 @@ function showToast(message, duration = 3000) {
 // Calculations
 // =====================================================
 function calcTotals() {
-  const spentFromSalary = state.items
-    .filter(i => i.checked && !i.isAdvance)
-    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  // مجموع پرداختی از کل (salaryPaid)
+  const spentFromSalary = state.items.reduce((sum, i) => sum + (Number(i.salaryPaid) || 0), 0);
   
-  const spentFromAdvance = state.items
-    .filter(i => i.checked && i.isAdvance)
-    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  // مجموع پرداختی از دادگی (advancePaid)
+  const spentFromAdvance = state.items.reduce((sum, i) => sum + (Number(i.advancePaid) || 0), 0);
   
   const salary = Number(state.totalSalary) || 0;
   const advance = Number(state.advanceTaken) || 0;
@@ -1535,18 +1630,13 @@ async function submitFinal() {
   let changesText = '📋 *تغییرات جدید:*\n';
   pendingChanges.items.forEach((change, index) => {
     let desc = '';
-    if (change.type === 'toggle') {
-      const status = change.data.checked ? '✅ پرداخت شد' : '❌ لغو پرداخت';
-      const from = change.data.isAdvance ? ' (از دادگی)' : ' (از کل)';
-      desc = `${status}${from}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
+    if (change.type === 'partial_payment') {
+      desc = `🔶 تغییر پرداخت از دادگی: ${change.data.name} (${toFa(change.data.advancePaid)} از ${toFa(change.data.total)} از دادگی، ${toFa(change.data.salaryPaid)} از کل)`;
     } else if (change.type === 'add') {
       const star = change.data.important ? ' ⭐' : '';
       desc = `➕ افزوده شد${star}: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
     } else if (change.type === 'delete') {
       desc = `🗑️ حذف شد: ${change.data.name} (${toFa(change.data.amount)} ریال)`;
-    } else if (change.type === 'advance') {
-      const status = change.data.isAdvance ? '🔶 از دادگی' : '🔷 از کل';
-      desc = `تغییر منبع: ${change.data.name} → ${status}`;
     } else if (change.type === 'important') {
       const status = change.data.important ? '⭐ مهم' : '🔹 عادی';
       desc = `تغییر اهمیت: ${change.data.name} → ${status}`;
@@ -1586,7 +1676,6 @@ function render() {
   const newLabel = monthLabel(currentMonthKey);
   if (title.textContent !== newLabel) {
     title.textContent = newLabel;
-    // اضافه کردن انیمیشن تغییر ماه
     title.className = 'month-title slide-left';
     setTimeout(() => {
       title.className = 'month-title';
@@ -1595,18 +1684,27 @@ function render() {
 
   const list = document.getElementById('itemsList');
   list.innerHTML = '';
+  
   state.items.forEach(item => {
+    // محاسبه وضعیت پرداخت کامل
+    const totalAmount = Number(item.amount) || 0;
+    const advancePaid = Number(item.advancePaid) || 0;
+    const salaryPaid = Number(item.salaryPaid) || 0;
+    const isPaid = (advancePaid + salaryPaid) >= totalAmount && totalAmount > 0;
+
     const li = document.createElement('li');
     li.className = 'item-row' + 
-      (item.checked ? ' checked' : '') + 
-      (item.isAdvance ? ' advance' : '') +
+      (isPaid ? ' paid' : '') + 
       (item.important ? ' important' : '');
 
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.className = 'item-checkbox';
-    cb.checked = item.checked;
-    cb.addEventListener('change', () => onToggleItem(item.id, cb.checked));
+    // نمایش جزئیات پرداخت
+    const detailSpan = document.createElement('span');
+    detailSpan.className = 'item-detail';
+    detailSpan.innerHTML = `
+      <span class="advance-part">${toFa(advancePaid)}</span> / 
+      <span class="salary-part">${toFa(salaryPaid)}</span>
+    `;
+    detailSpan.title = `از دادگی: ${toFa(advancePaid)} | از کل: ${toFa(salaryPaid)} | کل: ${toFa(totalAmount)}`;
 
     const name = document.createElement('span');
     name.className = 'item-name';
@@ -1614,16 +1712,16 @@ function render() {
 
     const amount = document.createElement('span');
     amount.className = 'item-amount';
-    amount.textContent = toFa(item.amount);
+    amount.textContent = toFa(totalAmount);
 
     const actions = document.createElement('div');
     actions.className = 'item-actions';
 
     const advanceBtn = document.createElement('button');
-    advanceBtn.className = 'advance-btn' + (item.isAdvance ? ' active' : '');
+    advanceBtn.className = 'advance-btn';
     advanceBtn.textContent = 'دادگی';
-    advanceBtn.title = 'پرداخت از دادگی';
-    advanceBtn.addEventListener('click', () => onToggleAdvance(item.id));
+    advanceBtn.title = 'تعیین مبلغ از دادگی';
+    advanceBtn.addEventListener('click', () => openAdvanceModal(item.id));
 
     const importantBtn = document.createElement('button');
     importantBtn.className = 'important-btn' + (item.important ? ' active' : '');
@@ -1654,9 +1752,9 @@ function render() {
     actions.appendChild(repeatBtn);
     actions.appendChild(del);
 
-    li.appendChild(cb);
     li.appendChild(name);
     li.appendChild(amount);
+    li.appendChild(detailSpan);
     li.appendChild(actions);
     list.appendChild(li);
   });
@@ -1689,42 +1787,85 @@ function render() {
 // =====================================================
 // Event Handlers
 // =====================================================
-function onToggleItem(id, checked) {
-  const item = state.items.find(i => i.id === id);
-  if (!item) return;
-  item.checked = checked;
-  
-  trackChange('toggle', {
-    id: item.id,
-    name: item.name,
-    amount: item.amount,
-    checked: checked,
-    isAdvance: item.isAdvance || false
-  });
-  
-  render();
-}
 
-function onToggleAdvance(id) {
+// دیالوگ دادگی
+function openAdvanceModal(id) {
   const item = state.items.find(i => i.id === id);
   if (!item) return;
   
-  if (item.checked) {
-    showToast('ابتدا تیک آیتم را بردارید تا بتوانید منبع آن را تغییر دهید');
-    return;
+  advanceItemId = id;
+  const total = Number(item.amount) || 0;
+  const currentAdvance = Number(item.advancePaid) || 0;
+  
+  document.getElementById('advanceItemName').textContent = `💰 ${item.name} (${toFa(total)} ریال)`;
+  document.getElementById('advanceSlider').max = total;
+  document.getElementById('advanceSlider').value = currentAdvance;
+  document.getElementById('advanceInput').value = currentAdvance;
+  document.getElementById('advanceMaxLabel').textContent = toFa(total);
+  document.getElementById('advanceRemainingLabel').textContent = toFa(total - currentAdvance);
+  
+  document.getElementById('advanceModal').classList.remove('hidden');
+  
+  // اتصال رویدادها
+  const slider = document.getElementById('advanceSlider');
+  const input = document.getElementById('advanceInput');
+  const remainingLabel = document.getElementById('advanceRemainingLabel');
+  
+  function updateAdvance(value) {
+    let val = Math.min(Math.max(0, Number(value) || 0), total);
+    slider.value = val;
+    input.value = val;
+    remainingLabel.textContent = toFa(total - val);
   }
   
-  item.isAdvance = !item.isAdvance;
+  slider.oninput = function() {
+    updateAdvance(this.value);
+  };
   
-  trackChange('advance', {
-    id: item.id,
-    name: item.name,
-    isAdvance: item.isAdvance
-  });
+  input.oninput = function() {
+    let val = Math.min(Math.max(0, Number(this.value) || 0), total);
+    updateAdvance(val);
+  };
   
-  render();
-  showToast(`آیتم "${item.name}" ${item.isAdvance ? 'از دادگی' : 'از کل'} پرداخت می‌شود`);
+  // دکمه تأیید
+  document.getElementById('advanceConfirmBtn').onclick = function() {
+    const newAdvance = Math.min(Math.max(0, Number(input.value) || 0), total);
+    const newSalary = total - newAdvance;
+    
+    if (newAdvance === currentAdvance) {
+      showToast('مقدار تغییر نکرد');
+      document.getElementById('advanceModal').classList.add('hidden');
+      return;
+    }
+    
+    item.advancePaid = newAdvance;
+    item.salaryPaid = newSalary;
+    
+    trackChange('partial_payment', {
+      id: item.id,
+      name: item.name,
+      total: total,
+      advancePaid: newAdvance,
+      salaryPaid: newSalary
+    });
+    
+    document.getElementById('advanceModal').classList.add('hidden');
+    render();
+    showToast(`💰 ${item.name}: ${toFa(newAdvance)} از دادگی، ${toFa(newSalary)} از کل`);
+  };
 }
+
+// بستن دیالوگ دادگی
+document.getElementById('closeAdvanceBtn').addEventListener('click', () => {
+  document.getElementById('advanceModal').classList.add('hidden');
+});
+
+// کلیک بیرون مودال برای بستن
+document.getElementById('advanceModal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('advanceModal').classList.add('hidden');
+  }
+});
 
 function onToggleImportant(id) {
   const item = state.items.find(i => i.id === id);
@@ -1810,12 +1951,18 @@ function onAddItem() {
     return;
   }
 
+  const total = Number(amount);
+  if (total <= 0) {
+    showToast('مبلغ باید بزرگتر از صفر باشد');
+    return;
+  }
+
   const newItem = {
     id: Date.now().toString(),
     name,
-    amount: Number(amount),
-    checked: false,
-    isAdvance: false,
+    amount: total,
+    advancePaid: 0,
+    salaryPaid: 0,
     important: false,
     repeat: false
   };
@@ -1858,14 +2005,26 @@ function saveEdit() {
     return;
   }
   
+  const total = Number(newAmount);
+  if (total <= 0) {
+    showToast('مبلغ باید بزرگتر از صفر باشد');
+    return;
+  }
+  
+  // اگر مبلغ تغییر کرد، پرداخت‌ها رو ریست کن (چون دیگه منطقی نیست)
+  const oldTotal = Number(item.amount) || 0;
   trackChange('edit', {
     id: item.id,
     name: newName,
-    amount: Number(newAmount)
+    amount: total,
+    oldAmount: oldTotal
   });
   
   item.name = newName;
-  item.amount = Number(newAmount);
+  item.amount = total;
+  // در صورت تغییر مبلغ، پرداخت‌های قبلی رو نگه دار اما اگر از مبلغ جدید بیشتر شد، اصلاح کن
+  if (item.advancePaid > total) item.advancePaid = total;
+  if (item.salaryPaid > total - item.advancePaid) item.salaryPaid = total - item.advancePaid;
   
   document.getElementById('editModal').classList.add('hidden');
   render();
@@ -1894,7 +2053,6 @@ function shiftMonth(delta) {
   const d = new Date(y, m - 1 + delta, 1);
   const newKey = monthKey(d);
   
-  // انیمیشن تغییر ماه
   const title = document.getElementById('monthTitle');
   title.className = 'month-title ' + (delta > 0 ? 'slide-left' : 'slide-right');
   
@@ -1916,8 +2074,8 @@ function startNewMonth() {
       id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 4),
       name: item.name,
       amount: Number(item.amount),
-      checked: false,
-      isAdvance: false,
+      advancePaid: 0,
+      salaryPaid: 0,
       important: false,
       repeat: true
     });
@@ -1965,12 +2123,8 @@ function renderHistory() {
 
   keys.forEach(key => {
     const data = loadMonth(key);
-    const spentFromSalary = data.items
-      .filter(i => i.checked && !i.isAdvance)
-      .reduce((s, i) => s + (Number(i.amount) || 0), 0);
-    const spentFromAdvance = data.items
-      .filter(i => i.checked && i.isAdvance)
-      .reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const spentFromSalary = data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0), 0);
+    const spentFromAdvance = data.items.reduce((s, i) => s + (Number(i.advancePaid) || 0), 0);
     const totalItems = data.items.length;
 
     const li = document.createElement('li');
@@ -2027,12 +2181,12 @@ function renderCharts() {
   
   const maxSpent = Math.max(...allKeys.map(k => {
     const data = loadMonth(k);
-    return data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    return data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0) + (Number(i.advancePaid) || 0), 0);
   }), 1);
   
   allKeys.slice(0, 6).forEach(key => {
     const data = loadMonth(key);
-    const spent = data.items.filter(i => i.checked).reduce((s, i) => s + (Number(i.amount) || 0), 0);
+    const spent = data.items.reduce((s, i) => s + (Number(i.salaryPaid) || 0) + (Number(i.advancePaid) || 0), 0);
     const percentage = Math.max((spent / maxSpent) * 100, 5);
     
     chartHTML += `
@@ -2055,7 +2209,7 @@ function renderCharts() {
 // =====================================================
 function exportBackup() {
   const data = {
-    version: '1.0',
+    version: '2.0',
     exportDate: new Date().toISOString(),
     months: {},
     settings: getTelegramSettings(),
@@ -2089,7 +2243,27 @@ function importBackup(file) {
       }
       
       Object.keys(data.months).forEach(key => {
-        saveMonth(key, data.months[key]);
+        // برای سازگاری با نسخه قبلی، آیتم‌های قدیمی رو به ساختار جدید تبدیل کن
+        const monthData = data.months[key];
+        if (monthData.items) {
+          monthData.items = monthData.items.map(item => {
+            // اگر advancePaid و salaryPaid وجود نداره، از isAdvance استفاده کن
+            if (item.advancePaid === undefined && item.salaryPaid === undefined) {
+              const total = Number(item.amount) || 0;
+              if (item.isAdvance) {
+                return { ...item, advancePaid: total, salaryPaid: 0 };
+              } else if (item.checked) {
+                return { ...item, advancePaid: 0, salaryPaid: total };
+              } else {
+                return { ...item, advancePaid: 0, salaryPaid: 0 };
+              }
+            }
+            return item;
+          });
+          // حذف فیلدهای قدیمی
+          monthData.items = monthData.items.map(({ isAdvance, checked, ...rest }) => rest);
+        }
+        saveMonth(key, monthData);
       });
       
       if (data.settings) {
@@ -2236,6 +2410,15 @@ document.getElementById('editAmount').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') saveEdit();
 });
 
+// بستن مودال‌ها با کلیک بیرون
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+});
+
 // =====================================================
 // Init
 // =====================================================
@@ -2245,4 +2428,4 @@ console.log('تغییرات ثبت نشده:', pendingChanges.items.length);
 console.log('آیتم‌های تکراری:', loadRepeatItems().length);
 </script>
 </body>
-</html>
+  </html>
